@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>ap</title>
+	<style type="text/css">
+		div.table {
+    		margin-left: 15%;
+    		padding: 10px 20px;
+		}
+
+		#apTable, #fapTable {
+    		font-family: arial, sans-serif;
+    		border-collapse: collapse;
+    		width: 80%;
+    		border: 3px solid black;
+    		margin: 16px;
+    		border-collapse: collapse;
+		}
+
+		th {
+    		text-align: left;
+    		padding: 8px;
+    		background-color: #FFAA33;
+		}
+
+		td {
+    		text-align: left;
+    		padding: 8px;    
+		}
+
+		tr:nth-child(even) {
+    		background-color: #dddddd;
+		}	
+
+		#apTable tr.header, #apTable tr:hover, #fapTable tr.header, #fapTable tr:hover {
+			background-color: #f1f1f1;
+		}	
+
+		#apInput, #fapInput {
+			border: 1px solid #ddd;
+			margin-bottom: 12px;
+		}
+	</style>
+	
+  	<script>
+  		function apFunction() {
+  			//Declare variables
+  			var input, filter, table, tr, td, i, txtValue;
+  			input = document.getElementById("apInput");
+  			filter = input.value.toUpperCase();
+  			table = document.getElementById("apTable");
+  			tr = table.getElementsByTagName("tr");
+  			//Loop throught all table rows, and hide those who don't match the search query
+  			for (i=0; i<tr.length; i++)
+  			{
+  				td = tr[i].getElementsByTagName("td")[0];
+  				if (td) {
+  					txtValue = td.textContent || td.innerText;
+  					if(txtValue.toUpperCase().indexOf(filter) > -1)
+  					{
+  						tr[i].style.display = "";
+  					} 
+  					else {
+  						tr[i].style.display = "none";
+  					}
+  				}
+  			}
+  		}
+  	</script>
+
+  	<script>
+  		function fapFunction() {
+  			//Declare variables
+  			var input, filter, table, tr, td, i, txtValue;
+  			input = document.getElementById("fapInput");
+  			filter = input.value.toUpperCase();
+  			table = document.getElementById("fapTable");
+  			tr = table.getElementsByTagName("tr");
+  			//Loop throught all table rows, and hide those who don't match the search query
+  			for (i=0; i<tr.length; i++)
+  			{
+  				td = tr[i].getElementsByTagName("td")[0];
+  				if (td) {
+  					txtValue = td.textContent || td.innerText;
+  					if(txtValue.toUpperCase().indexOf(filter) > -1)
+  					{
+  						tr[i].style.display = "";
+  					} 
+  					else {
+  						tr[i].style.display = "none";
+  					}
+  				}
+  			}
+  		}
+  	</script>
+</head>
+<body>
+  <div class="table">
+	<h2>AP資訊</h2>
+	
+	<input type="text" id="apInput" onkeyup="apFunction()" placeholder="Search for ID ..">
+    <table rules="all" id="apTable">
+		<th>Connecting AP</th>
+		{% for i in range(success|length) %}
+		{% set e = success[i] %}			{# set variable #}
+		<tr><td><a href=''>AP {{ i }}!</a> &emsp; {{ e[0] }}/ {{ e[1] }}/ {{ e[2] }}</td></tr>
+		{% endfor %}
+	</table>
+
+	<input type="text" id="fapInput" onkeyup="fapFunction()" placeholder="Search for ID ..">
+	<table rules="all" align-right="16px" id="fapTable">
+		<th>Connecting failed AP</th>
+		{% for i in range(fail|length) %}
+		{% set e = fail[i] %}
+		<tr><td><a href=''>AP {{ i }}!</a> &emsp; {{ e[0] }}/ {{ e[1] }}/ {{ e[2] }}</td></tr>
+		{% endfor %}
+	</table>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+}
+
+div.nav {
+/*    list-style-type: none;*/
+    margin: 0;
+    padding: 0;
+    width: 13%;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: visible;
+    font-family: Microsoft JhengHei;
+    color: black;
+    display: table;
+}
+
+button {
+    display: block;
+    color: blue;
+    padding: 8px 16px;
+    width: 15%;
+    height: 50px;
+    text-decoration: none;
+}
+
+button.navbar {
+    background-color: #4CAF50;
+    color: white;
+}
+
+button:hover:not(.active) {
+    /*background-color: blue;*/
+    color: white;
+}
+
+canvas {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+

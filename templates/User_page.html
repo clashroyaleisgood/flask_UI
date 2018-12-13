@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html>
+<head>	
+	<title>User</title>
+    <style type="text/css">
+        div.table {
+            margin-left: 15%;
+            padding: 10px 20px;
+        }
+
+        #userTable {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 80%;
+            border: 3px solid black;
+            margin: 16px;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 8px;
+            background-color: #FFAA33;
+        }
+
+        td {
+            text-align: left;
+            padding: 8px;    
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }       
+
+        #userTable tr.header, #userTable tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #userInput {
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+        }
+    </style>
+	
+    <script>
+        $(document).ready(function () {
+			$("td#user_choose").click(function() {	//一定要用 function() {... this 才正確
+				var index= $(this).attr("data-index");
+				var name= $(this).attr("data-name");
+				//console.log(this);
+				alert('index: '+index+'\n'+'name: '+name);
+				var data_j = {'index': index, 'name': name};
+				$("div#user_list").load_ajax( link_to_imformation, data_j); //可以接收到 UI_main_page 的變數
+			});
+			/*
+			$("td#user_choose").hover(function() {
+				$(this).css("font-size", "+=3px")
+				.css("padding", "+=10px")
+				.css("text-align", "center")
+				.css("color", "blue")
+				.css("font-weight", "bold");
+			}, function() {
+				$(this).css("font-size", "-=3px")
+				.css("padding", "-=10px")
+				.css("text-align", "left")
+				.css("color", "black")
+				.css("font-weight", "normal");
+			})*/
+        })
+    </script>
+    <script>
+        function userFunction() {
+            //Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("userInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("userTable");
+            tr = table.getElementsByTagName("tr");
+            //Loop throught all table rows, and hide those who don't match the search query
+            for (i=0; i<tr.length; i++)
+            {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if(txtValue.toUpperCase().indexOf(filter) > -1)
+                    {
+                        tr[i].style.display = "";
+                    } 
+                    else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="user_list" class="table">
+    	<h2>User資訊</h2>
+
+		<input type="text" id="userInput" onkeyup="userFunction()" placeholder="Search for ID ..">
+		
+    	<table rules="all" id="userTable">
+    		<th>Connecting User</th>
+
+			{% for e in users %}
+			<tr><td id='user_choose' data-index='{{ loop.index }}' data-name='{{ e }}'>
+				{{ loop.index }}. User {{ e }}: {{ users[e] }}
+			</td></tr>
+			{% endfor %}
+		</table>
+    </div>
+</body>
+</html>

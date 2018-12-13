@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submitting</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script>
+        $(document).ready(function () {
+            $('button#get').click( function() {
+                var data = {'test1': $('input[name="test1" ]').val(),
+                            'test2': $('input[name="test2" ]').val() };
+                $(this).post_ajax( '{{url_for('_test')}}', data, function(datain) {
+                    for(e in datain) {
+                        var temp= datain[e];
+                        $("div#about").html(e + '&emsp;' + temp[0] + '&emsp;' + temp[1]);
+                    }
+                });
+            });
+            $('button#users').click( function() {
+                data = {'name': $('input[name="name" ]').val(),
+                        'value': $('input[name="value" ]').val() };
+                $(this).post_ajax( '{{url_for('_add_user')}}', data, function(datain) {
+                    if(datain['success'] == true)
+                        alert('SUCCESS!\nadd user: '+ datain.user);
+                })
+            })
+        })
+    </script>
+</head>
+<body id="in_about">
+    <div style="margin-left:15%; padding:1px 16px; height:90%; background-color: #ffffff;">
+    <form>
+        test1 <input type="text" name="test1"><br><br>
+        test2 <input type="text" name="test2"><br><br>
+        <button id="get" type="button">SUB 咪挺</button>
+    </form>
+    <br>---------------------------------------------------------------------------------<br>
+    <form>
+        user name:  <input type="text" name="name"><br><br>
+        user value: <input type="text" name="value"><br><br>
+        <button id="users" type="button">SUB 咪挺</button>
+    </form>
+    <div id="about"></div>
+
+    </div>
+</body>
+</html>
