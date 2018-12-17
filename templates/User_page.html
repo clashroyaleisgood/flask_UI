@@ -7,7 +7,7 @@
             margin-left: 15%;
             padding: 10px 20px;
         }
-
+/*
         #userTable {
             font-family: arial, sans-serif;
             border-collapse: collapse;
@@ -35,9 +35,9 @@
         #userTable tr.header, #userTable tr:hover {
             background-color: #f1f1f1;
         }
-
+*/
         #userInput {
-            border: 1px solid #ddd;
+            border: 1px solid black;
             margin-bottom: 12px;
         }
     </style>
@@ -51,21 +51,13 @@
 				alert('index: '+index+'\n'+'name: '+name);
 				var data_j = {'index': index, 'name': name};
 				$("div#user_list").load_ajax( link_to_imformation, data_j); //可以接收到 UI_main_page 的變數
-			});
-			/*
-			$("td#user_choose").hover(function() {
-				$(this).css("font-size", "+=3px")
-				.css("padding", "+=10px")
-				.css("text-align", "center")
-				.css("color", "blue")
-				.css("font-weight", "bold");
-			}, function() {
-				$(this).css("font-size", "-=3px")
-				.css("padding", "-=10px")
-				.css("text-align", "left")
-				.css("color", "black")
-				.css("font-weight", "normal");
-			})*/
+            });
+            $('.js-pscroll').each(function(){
+                var ps = new PerfectScrollbar(this);
+                $(window).on('resize', function(){
+                ps.update();
+                })
+            });
         })
     </script>
     <script>
@@ -96,6 +88,7 @@
 </head>
 
 <body>
+    <!--
     <div id="user_list" class="table">
     	<h2>User資訊</h2>
 
@@ -111,5 +104,174 @@
 			{% endfor %}
 		</table>
     </div>
+    -->
+    <div id="user_list">
+        <div class="limiter" style="margin-left: 15%; padding-top: 5%; width: 85%; padding: 10px 20px;">
+            <h1>Connecting User</h1>
+            <input type="text" id="userInput" onkeyup="userFunction()" placeholder="Search for ID .." style="margin-left: 2%; margin-top: 3%; outline-style: solid; outline-width: 1px;">
+            <div class="container-table100" style="justify-content: flex-start; min-height: 20vh;">
+                <div class="wrap-table100">
+                    <div class="table100 ver3 m-b-110">
+                        <div class="table100-head">
+                            <table>
+
+                                <thead>
+                                    <tr class="row100 head">
+                                        <th class="cell100 column1">ID</th>
+                                        <th class="cell100 column2">connected AP</th>
+                                        <th class="cell100 column3">network traffic</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                        <div class="table100-body js-pscroll">
+                            <table id="userTable">
+                                <tbody>
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Like a butterfly</td>
+                                        <td class="cell100 column2">Boxing</td>
+                                        <td class="cell100 column3">9:00 AM - 11:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Mind & Body</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Crit Cardio</td>
+                                        <td class="cell100 column2">Gym</td>
+                                        <td class="cell100 column3">9:00 AM - 10:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Wheel Pose Full Posture</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">7:00 AM - 8:30 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Wheel Pose Full Posture</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">7:00 AM - 8:30 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Playful Dancer's Flow</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Zumba Dance</td>
+                                        <td class="cell100 column2">Dance</td>
+                                        <td class="cell100 column3">5:00 PM - 7:00 PM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Cardio Blast</td>
+                                        <td class="cell100 column2">Gym</td>
+                                        <td class="cell100 column3">5:00 PM - 7:00 PM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Pilates Reformer</td>
+                                        <td class="cell100 column2">Gym</td>
+                                        <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Supple Spine and Shoulders</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">6:30 AM - 8:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Yoga for Divas</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">9:00 AM - 11:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Virtual Cycle</td>
+                                        <td class="cell100 column2">Gym</td>
+                                        <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Like a butterfly</td>
+                                        <td class="cell100 column2">Boxing</td>
+                                        <td class="cell100 column3">9:00 AM - 11:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Mind & Body</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Crit Cardio</td>
+                                        <td class="cell100 column2">Gym</td>
+                                        <td class="cell100 column3">9:00 AM - 10:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Wheel Pose Full Posture</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">7:00 AM - 8:30 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Playful Dancer's Flow</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Zumba Dance</td>
+                                        <td class="cell100 column2">Dance</td>
+                                        <td class="cell100 column3">5:00 PM - 7:00 PM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Cardio Blast</td>
+                                        <td class="cell100 column2">Gym</td>
+                                        <td class="cell100 column3">5:00 PM - 7:00 PM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Pilates Reformer</td>
+                                        <td class="cell100 column2">Gym</td>
+                                        <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Supple Spine and Shoulders</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">6:30 AM - 8:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Yoga for Divas</td>
+                                        <td class="cell100 column2">Yoga</td>
+                                        <td class="cell100 column3">9:00 AM - 11:00 AM</td>
+                                    </tr>
+
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">Virtual Cycle</td>
+                                        <td class="cell100 column2">Gym</td>
+                                        <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+                                    </tr>
+                                </tbody>
+                            </table>    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
 </body>
 </html>

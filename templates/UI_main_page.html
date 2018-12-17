@@ -10,14 +10,12 @@
         var link_to_imformation= '{{url_for('imfor_page')}}';   //temp
     </script>
 
-    <!--
-	<link rel="stylesheet" type="text/css" href="UI_main_css.css">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    -->
     <link rel="Shortcut Icon" type="image/x-icon" href="{{url_for('static',filename='favicon.ico')}}">
     <link rel="stylesheet" href="{{url_for('static', filename= 'bootstrap.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'UI_main_css.css')}}">
-    
+
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -27,13 +25,21 @@
     <script src="{{url_for('static', filename= 'popper.min.js')}}"></script>
     <script src="{{url_for('static', filename= 'ajax_support.js')}}"></script>
 
-    <!--
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-    <script src="{{url_for('static', filename= 'ajax_support.js')}}"></script>
-    -->
-    
+<!--     <link rel="stylesheet" type="text/css" href="../static/css_for_table/bootstrap.min.css"> -->
+<!--===============================================================================================-->
+<!--     <link rel="stylesheet" type="text/css" href="../static/css_for_table/font-awesome.min.css"> -->
+<!--===============================================================================================-->
+<!--     <link rel="stylesheet" type="text/css" href="../static/css_for_table/animate.css"> -->
+<!--===============================================================================================-->
+<!--     <link rel="stylesheet" type="text/css" href="../static/css_for_table/select2.min.css"> -->
+<!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'css_for_table/perfect-scrollbar.css')}}">
+<!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'css_for_table/util.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'css_for_table/main.css')}}">
+    <script src="{{url_for('static', filename= 'css_for_table/perfect-scrollbar.min.js')}}"></script>
+    <script src="{{url_for('static', filename= 'css_for_table/main.js')}}"></script>
+
     <script>
         function ret_html(select) {
             switch(select) {
@@ -62,7 +68,6 @@
                 $(this).addClass("navbar");
                 page_select = $(this).attr('id');
                 var temp= ret_html(page_select);
-                //if (temp!=0)
                 $('#con').load(temp);
             
             });
@@ -73,20 +78,14 @@
 
 <body>
 
-    <div class="btn-group-vertical nav" role="group" id="nav">    
+    <div class="btn-group-vertical nav" role="group" id="nav">
         <button type="button" class="btn btn-outline-success navbar" id="main"><b>HOME</b></button>
-        <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="ap"><b>AP管理</b></button>
-            <div class="dropdown-menu">
-                <a href="#" class="dropdown-item" id="addap">Add AP</a>
-                <a href="#" class="dropdown-item" id="delap">Delete AP</a>
-            </div>
-        </div>
+        <button type="button" class="btn btn-outline-success" id="ap"><b>AP管理</b></button>
         <div class="btn-group" role="group">
             <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="user"><b>User管理</b></button>
             <div class="dropdown-menu">
-                <a href="#" class="dropdown-item" id="addus">Add User</a>
-                <a href="#" class="dropdown-item" id="delus">Delete User</a>
+                <button type="button" class="dropdown-item" id="adduser" style="width: 100%; height: 15%">Add User</a>
+                <button type="button" class="dropdown-item" id="deluser" style="width: 100%; height: 15%">Delete User</a>
             </div>            
         </div>
         <button type="button" class="btn btn-outline-success" id="about"><b>About</b></button>
