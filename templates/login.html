@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>Login</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Login/style.css') }}">
+    <style>
+        body{
+            background: url( {{ url_for('static', filename='Login/pic1.jpg') }} );
+        }
+    </style>
+<body>
+    {% set messages = get_flashed_messages() %}
+    {% if messages[0] == 'wrong' %}
+        <script>alert(" wrong {{ messages[1] }} ");</script>
+    {% endif %}
+    <div class="loginbox">
+    <img src="{{ url_for('static', filename='Login/avatar.png') }}" class="avatar">
+        <h1>Login Here</h1>
+        <form action='login' method='POST'>
+            <p>Username</p>
+            <input type="text" name="account" placeholder="Enter Username">
+            <p>Password</p>
+            <input type="password" name="password" placeholder="Enter Password">
+            <input type="submit" name="submit" value="Login">
+        </form>
+        
+    </div>
+
+</body>
+</head>
+</html>
