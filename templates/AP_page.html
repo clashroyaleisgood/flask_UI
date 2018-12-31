@@ -1,121 +1,330 @@
-﻿<!DOCTYPE html>
-<html>
+﻿<!-- <!DOCTYPE html>
+ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 	<title>ap</title>
 	<style type="text/css">
-		div.table {
-    		margin-left: 15%;
-    		padding: 10px 20px;
-		}
 
-		#apTable, #fapTable {
-    		font-family: arial, sans-serif;
-    		border-collapse: collapse;
-    		width: 80%;
-    		border: 3px solid black;
-    		margin: 16px;
-    		border-collapse: collapse;
-		}
-
-		th {
-    		text-align: left;
-    		padding: 8px;
-    		background-color: #FFAA33;
-		}
-
-		td {
-    		text-align: left;
-    		padding: 8px;    
-		}
-
-		tr:nth-child(even) {
-    		background-color: #dddddd;
-		}	
-
-		#apTable tr.header, #apTable tr:hover, #fapTable tr.header, #fapTable tr:hover {
-			background-color: #f1f1f1;
-		}	
-
-		#apInput, #fapInput {
+		#apInput {
 			border: 1px solid #ddd;
 			margin-bottom: 12px;
 		}
+
+        input.backhover:hover {
+            background-color: gray;
+        }
+
+        tr td:first-child:hover {
+            color: green;
+            cursor: pointer;
+        }
+
 	</style>
-	
-  	<script>
-  		function apFunction() {
-  			//Declare variables
-  			var input, filter, table, tr, td, i, txtValue;
-  			input = document.getElementById("apInput");
-  			filter = input.value.toUpperCase();
-  			table = document.getElementById("apTable");
-  			tr = table.getElementsByTagName("tr");
-  			//Loop throught all table rows, and hide those who don't match the search query
-  			for (i=0; i<tr.length; i++)
-  			{
-  				td = tr[i].getElementsByTagName("td")[0];
-  				if (td) {
-  					txtValue = td.textContent || td.innerText;
-  					if(txtValue.toUpperCase().indexOf(filter) > -1)
-  					{
-  						tr[i].style.display = "";
-  					} 
-  					else {
-  						tr[i].style.display = "none";
-  					}
-  				}
-  			}
-  		}
-  	</script>
 
-  	<script>
-  		function fapFunction() {
-  			//Declare variables
-  			var input, filter, table, tr, td, i, txtValue;
-  			input = document.getElementById("fapInput");
-  			filter = input.value.toUpperCase();
-  			table = document.getElementById("fapTable");
-  			tr = table.getElementsByTagName("tr");
-  			//Loop throught all table rows, and hide those who don't match the search query
-  			for (i=0; i<tr.length; i++)
-  			{
-  				td = tr[i].getElementsByTagName("td")[0];
-  				if (td) {
-  					txtValue = td.textContent || td.innerText;
-  					if(txtValue.toUpperCase().indexOf(filter) > -1)
-  					{
-  						tr[i].style.display = "";
-  					} 
-  					else {
-  						tr[i].style.display = "none";
-  					}
-  				}
-  			}
-  		}
-  	</script>
+
+<script>
+    // search
+    function apFunction() {
+        //Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("apInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("Table");
+        tr = table.getElementsByTagName("tr");
+        //Loop throught all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    // apdetail
+    $(document).ready(function () {
+        //$("tr td:first-child").click(function () {
+        $("tr td:first-child").click(function () {
+            $("#aptable").hide();
+            data = {
+                'ap_id': $(this).parent().attr("data-id")
+            }
+            $("#apform").post_ajax("{{url_for('imfor')}}", data, function (datain) {
+                //alert(datain['123']);
+                var ap_imfor= datain['data'];
+                $("input#ID").attr("placeholder", ap_imfor[0]);
+                id = $("input#ID").attr("placeholder");
+                $("input#MAC").attr("placeholder", ap_imfor[1]);
+                $("div#SSIDS").html("");
+                for(var i=0; i<ap_imfor[2].length; i++) {
+                    //alert(ap_imfor[2][i]);
+                    $("div#SSIDS").append("<div class=\"form-group row\">"+
+                        "<label for=\"inputSSID\" class=\"col-sm-2 col-form-label\">SSID "+ (i+1) +"</label>"+
+                        "<div class=\"col-sm-4\">"+
+                            "<input type=\"text\" class=\"form-control\" style=\"background-color: #DDDDDD;\" id=\"inputSSID"+i+"\" placeholder=\"SSID\" value="+ ap_imfor[2][i] +" readonly data-type=\"read\">"+
+                            "</div><input type=\"button\" id=\"edit\" class=\"btn btn-primary mb-2\" value=\"修改\" onclick=\'processEdit(\"inputSSID"+i+"\");\'>"+
+                            "<input type=\"button\" id=\"confirm\" class=\"btn btn-primary mb-2\" value=\"確認\" onclick=\'processFormData(\"inputSSID"+i+"\");\'>"+
+                            "</div>");
+                }
+                $("input#device_id").attr("placeholder", ap_imfor[3]);
+                $("input#cpu_usage").attr("placeholder", ap_imfor[4]);  //<status>
+                $("input#received").attr("placeholder", ap_imfor[5]);
+                $("input#transmit").attr("placeholder", ap_imfor[6]);
+                $("input#timestamp").attr("placeholder", ap_imfor[7]);  //</status>
+                $("input#gw_id").attr("placeholder", ap_imfor[8]);      //<node>
+                $("input#datetime").attr("placeholder", ap_imfor[9]);   //最後登陸時間
+                $("input#last_ip").attr("placeholder", ap_imfor[10]);
+                $("input#sys_uptime").attr("placeholder", ap_imfor[11]);
+                $("input#sys_memfree").attr("placeholder", ap_imfor[12]);
+                $("input#sys_load").attr("placeholder", ap_imfor[13]);
+                $("input#wifidog_uptime").attr("placeholder", ap_imfor[14]);
+                $("input#created_time").attr("placeholder", ap_imfor[15]);
+                $("input#update_time").attr("placeholder", ap_imfor[16]);//</node>
+
+            });
+
+            $("#apform").fadeIn();
+            //alert("haha");
+        });
+        $("#back").click(function () {
+            $("#aptable").show();
+            $("#apform").hide();
+        });
+    });
+    // 進行修改
+    var edit = false;
+    var id;
+    var ssid_from="";
+    function processEdit(z) {
+        if(!edit){
+        var ssid=$("#"+z);
+        if( ssid.attr("data-type") == "read" ){
+            ssid_from = ssid.val() ;            //input 的 value 要用 .val() 不能用 .attr("value")
+            //alert('type: '+ ssid.attr("data-type"));
+            ssid.css({
+                "background": "#FFDD55",
+                "color": "red"
+            })
+                .removeAttr("readonly")
+                .attr({
+                    "data-type": "edit",
+                    "data-from": ssid.attr("value")
+            });
+            edit = true;
+            //alert('type: '+ ssid.attr("data-type"));
+            //alert("change"+ ssid_from);
+            //alert("id= "+ id);
+        }}
+    }
+
+    // 確認修改並取得ssid改變的值
+    function processFormData(z) {
+        if(edit) {
+        var ssid=$("#"+z);
+        if( ssid.attr("data-type") == "edit" ){
+            //alert('type: '+ ssid.attr("data-type"));
+            ssid.css({
+                "background": "#DDDDDD",
+                "color": "#495057"
+            })
+                .attr({
+                    "readonly": "true",
+                    "data-type": "read"
+            });
+            //alert('type: '+ ssid.attr("data-type"));
+            //alert('value: '+ ssid.val());
+            
+            var ssid_to= ssid.val();
+            if( ssid_from == ssid_to ){
+                alert("same ssid");
+            }
+            else {
+                data={'ap_id': id, 'from': ssid_from, 'to': ssid_to };
+                ssid.post_ajax("{{ url_for('change') }}", data, function(){} );
+                alert("send");
+            }
+            edit = false;
+        }}
+    }
+</script>
 </head>
+
 <body>
-  <div class="table">
-	<h2>AP資訊</h2>
-	
-	<input type="text" id="apInput" onkeyup="apFunction()" placeholder="Search for ID ..">
-    <table rules="all" id="apTable">
-		<th>Connecting AP</th>
-		{% for i in range(success|length) %}
-		{% set e = success[i] %}			{# set variable #}
-		<tr><td><a href=''>AP {{ i }}!</a> &emsp; {{ e[0] }}/ {{ e[1] }}/ {{ e[2] }}</td></tr>
-		{% endfor %}
-	</table>
 
-	<input type="text" id="fapInput" onkeyup="fapFunction()" placeholder="Search for ID ..">
-	<table rules="all" align-right="16px" id="fapTable">
-		<th>Connecting failed AP</th>
-		{% for i in range(fail|length) %}
-		{% set e = fail[i] %}
-		<tr><td><a href=''>AP {{ i }}!</a> &emsp; {{ e[0] }}/ {{ e[1] }}/ {{ e[2] }}</td></tr>
-		{% endfor %}
-	</table>
-  </div>
+    <script type="text/javascript">
+        $(function () {
+            $("#Table").tablesorter({widgets: ['zebra']});
+        });
+    </script>
 
+    <div id="aptable">
+        <div class="limiter" style="margin-left: 15%; padding-top: 5%; width: 85%; padding: 10px 20px;  padding-top: 6%;">
+            <h1><b>AP</b></h1>
+            <input type="text" id="apInput" onkeyup="apFunction()" placeholder="Search for ID .." style="margin-left: 2%; margin-top: 3%; outline-style: solid; outline-width: 2px; padding: 4px;">
+            <div class="container-table100" style="justify-content: flex-start; min-height: 20vh;">
+                <div class="wrap-table100">
+                    <div class="table100 ver3 m-b-110">
+                            
+                        
+                        <table id="Table">
+                            <div class="table100-head">
+                            <thead>
+                                <tr class="row100 head" style="cursor: pointer;">
+                                    <th class="cell100 column1">name</th>
+                                    <th class="cell100 column2">ID</th>
+                                    <th class="cell100 column3">MAC</th>
+                                    <th class="cell100 column4">SSID</th>
+                                </tr>
+                            </thead>
+                            </div>
+<!--                         </table>
+                        </div>    
+                        <div class="table100-body js-pscroll">  
+                        <table id="Table" class="tablesorter"> -->        
+                            <div class="js-pscroll">
+                            <tbody class="table100-body">
+								{# 從這裡開始 #}        {# get_ap_name table #}
+								{%- for ap_id in ap_names -%}
+								{% set ap = ap_names[ap_id] %}
+								<tr class="row100 body" data-id=" {{ ap_id }} ">
+									<td class="cell100 column1">{{ nodes[ ap_id ][0] }}</td>{# from node table #}
+									<td class="cell100 column2">{{ ap_id }}</td>
+									<td class="cell100 column3">{{ ap[0] }}</td>
+									<td class="cell100 column4">{{ ap[1] }}</td>
+								</tr>
+								{%- endfor -%}
+								{# 到這裡結束 #}
+                            </tbody>
+                            </div>
+                        </table>
+                        <!-- </div> -->
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="apform" class="limiter" style="margin-left: 15%; padding-top: 5%; width: 85%; padding: 10px 20px; display: none; padding-top: 6%;">
+        <h1>Information</h1>
+        <form>
+                <div class="form-group row">
+                    <label for="ID" class="col-sm-2 col-form-label">ID</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control" id="ID" placeholder="ID">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="MAC" class="col-sm-2 col-form-label">MAC</label>
+                    <div class="col-sm-4">
+                        <input type="number" readonly class="form-control" id="MAC" placeholder="MAC">
+                    </div>
+                </div>
+                <div id="SSIDS">
+                    <div class="form-group row"><!--舊資料會被刷掉-->
+                        <label for="inputSSID" class="col-sm-2 col-form-label">SSID</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" style="background-color: #DDDDDD;" id="inputSSID1" placeholder="SSID" value="0000" readonly>
+                        </div>
+                        <input type="button" id="edit" class="btn btn-primary mb-2" value="修改" onclick='processEdit("inputSSID1");'>
+                        <input type="button" id="confirm" class="btn btn-primary mb-2" value="確認" onclick='processFormData("inputSSID1");'>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="device_id" class="col-sm-2 col-form-label">Device ID</label>
+                    <div class="col-sm-4">
+                        <input type="number" readonly class="form-control" id="device_id" placeholder="device ID">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="cpuusage" class="col-sm-2 col-form-label">CPU Usage</label>
+                    <div class="col-sm-4">
+                        <input type="number" readonly class="form-control" id="cpu_usage" placeholder="data">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="received" class="col-sm-2 col-form-label">Received Data</label>
+                    <div class="col-sm-4">
+                        <input type="number" readonly class="form-control" id="received" placeholder="data">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="transmit" class="col-sm-2 col-form-label">Transmit Data</label>
+                    <div class="col-sm-4">
+                        <input type="number" readonly class="form-control" id="transmit" placeholder="data">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="timestamp" class="col-sm-2 col-form-label">Timestamp</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control" id="timestamp" placeholder="time">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="gw_id" class="col-sm-2 col-form-label">gw_ID</label>
+                    <div class="col-sm-4">
+                        <input type="number" readonly class="form-control" id="gw_id" placeholder="ID">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="datetime" class="col-sm-2 col-form-label">最後登錄時間</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control" id="datetime" placeholder="time">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="last_ip" class="col-sm-2 col-form-label">Last_IP</label>
+                    <div class="col-sm-4">
+                        <input type="number" readonly class="form-control" id="last_ip" placeholder="IP">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="sys_uptime" class="col-sm-2 col-form-label">System Uptime</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control" id="sys_uptime" placeholder="time">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="sys_memfree" class="col-sm-2 col-form-label">System Memfree</label>
+                    <div class="col-sm-4">
+                        <input type="number" readonly class="form-control" id="sys_memfree" placeholder="sys_memfree">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="sys_load" class="col-sm-2 col-form-label">System Load</label>
+                    <div class="col-sm-4">
+                        <input type="number" readonly class="form-control" id="sys_load" placeholder="Load data">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="wifidog_uptime" class="col-sm-2 col-form-label">Wifidog Uptime</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control" id="wifidog_uptime" placeholder="time">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="created_time" class="col-sm-2 col-form-label">Created Time</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control" id="created_time" placeholder="time">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="update_time" class="col-sm-2 col-form-label">Update Time</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control" id="update_time" placeholder="time">
+                    </div>
+                </div>
+                <input type="text" readonly class="form-control backhover" style="width: 5%; cursor: pointer;" id="back" value="back">
+        </form>
+    </div>
+    
 </body>
+
 </html>

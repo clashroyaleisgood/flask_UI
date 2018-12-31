@@ -9,9 +9,8 @@ app.secret_key = 'Your Key'
 login_manager = LoginManager(app)
 #  login\_manager.init\_app(app)也可以
 
-UI_users = {'123': {'password': '123'}}
-  
-  
+UI_users = {'123': {'password': '123'}}         #目前唯一的帳號 (多組帳號意義不大)
+
 class User(UserMixin):
     pass
 
@@ -19,7 +18,6 @@ class User(UserMixin):
 def user_loader(account):
     if account not in UI_users:
         return
-
     user = User()
     user.id = account
     return user
@@ -35,12 +33,12 @@ def login():
 
     #-------------------- POST
     account = request.form['account']
-    if account not in UI_users:
-        flash('wrong')
+    if account not in UI_users:                                     #wrong account
+        flash('wrong')          #傳資料到login.html 裡面
         flash('account!')
         return redirect( url_for('login'))
 
-    elif request.form['password'] == UI_users[account]['password']:
+    elif request.form['password'] == UI_users[account]['password']: #correct
         #  實作User類別
         user = User()
         #  設置id就是email
@@ -49,11 +47,10 @@ def login():
         login_user(user)
         #  登入成功，轉址
         return redirect(url_for('main'))
-
+                                                                    #wrong password
     flash('wrong')
     flash('password!')
     return redirect( url_for('login'))
-
 
 @app.route('/protected')
 #@login_required
@@ -64,7 +61,7 @@ def protected():
         return 'you are not logged in'
     return 'Logged in as: ' + current_user.id + 'Login is_active:True'
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET'])
 def logout():
     logout_user()
     #return 'Logged out'
@@ -74,7 +71,7 @@ def logout():
 
 @app.route('/', methods=['GET'])
 def main():
-    if not current_user.is_active:
+    if not current_user.is_active:              #這兩行用來檢測使用者登入狀況
         return redirect( url_for( 'login'))
     return render_template('UI_main_page.html')
 
@@ -91,63 +88,109 @@ def ap_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
     data={}
-    data['success']= imfor_ap_succ()
-    data['fail']= imfor_ap_fail()
-    return render_template('AP_page.html', **data)
+    data['ap_names'] = get_ap_name()
+    data['ap_status']= get_ap_status()
+    data['nodes'] = get_node()
+    return render_template('AP_page.html', **data)      # 一次送三個table過去
+'''
+@app.route('/AP_detail/<int:AP_id>')
+def ap_detail(AP_id):
+    if isinstance(AP_id, int):
+        return 'find id in table'
+    return """ <script>alert("Error:""" + AP_id + """ is not a number");</script> """
 
-
+@app.route('/APdetail/', methods=['GET'])       #detail from pa en
+def ap_detailed():
+    return render_template('AP_detail.html')
+'''
 @app.route('/User/', methods=['GET'])
 def user_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
-    return render_template('User_page.html', users= users)
+    return render_template('User_page.html', users= get_users() )
 
 
 @app.route('/about/', methods=['GET', 'POST'])
 def about_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
-    return render_template('about_to_test_submitting.html')
+    return '''
+	<div style="margin-left:15%; padding:1px 16px; height: 20%; background-color: #ffffff; padding-top: 6%;" id="main">
+    none
+    <div>
+    '''
 
 #------------------------------------------------------     data
+# --------------------------- 以下四個函式模擬 db 回傳資料
+AP_num= 10
+user_num=10
+def get_node(ind = 0):
+    nodes={}
+    if ind == 0:
+        for i in range(1, AP_num+1):
+            nodes[str(i) ]=['nod'+str(j) for j in range(i+1, i+11)]
+        return nodes
+    else:
+        i= 1
+        return ['nod'+str(j) for j in range(i+1, i+11)]
 
-def imfor_ap_succ():
-    imfor= [[10*i+j for j in range(5)]for i in range(1, 20)]
-    return imfor
+def get_ap_status(ind = 0):
+    apdb={}
+    if ind == 0:
+        for i in range(1, AP_num+1):
+            apdb[str(i) ]=['sta'+str(j) for j in range(i+1, i+5)]
+        return apdb
+    else:
+        i= 1
+        return ['sta'+str(j) for j in range(i+1, i+5)]
 
-def imfor_ap_fail():
-    imfor= [[10*i+j for j in range(5)]for i in range(6, 1, -1)]
-    return imfor
+def get_ap_name(ind = 0):
+    apna={}
+    if ind == 0:
+        for i in range(1, AP_num+1):
+            apna[str(i) ]=['name'+str(j) for j in range(i+1, i+3)]
+            apna[str(i) ][1]=[21, 22, 23]
+        return apna
+    else:
+        i= 1
+        ret_list = ['name'+str(j) for j in range(i+1, i+3)]
+        ret_list[1]=[21,22,23]
+        return ret_list
 
-@app.route('/_test', methods=["POST"])
-def _test():
+def get_users(ind = 0):
+    userdb={}
+    if ind == 0:
+        for i in range(1, user_num+1):
+            userdb[str(i) ]=[j for j in range(i+1, i+5)]
+        return userdb
+    else:
+        i = 1
+        return [j for j in range(i+1, i+5)]
+# -----------------------------------------------------
+
+@app.route('/_imfor', methods=['POST'])
+def imfor():
     content = request.get_json()
-    to_json= {}
-    to_json['get data']= [content['test1'], content['test2']]
-    return jsonify(to_json)
+    id = int( content['ap_id'] )
+    #data=[i for i in range(start, start +17)]
+    #data[2]=[21, 22, 23, 24]
+    name= get_ap_name(id)
+    status= get_ap_status(id)
+    node= get_node(id)
+    data=[]
+    data+= [id]         #0
+    data+= name[:]      #1 2
+    data+= [id]         #3 device id
+    data+= status[:]    #4 5 6 7
+    data+= node[1:]     #8 ~ 16
+    return jsonify({'data':data})
 
-@app.route('/test_imfor_page/', methods=['GET', 'POST'])
-def imfor_page():
-    #content = request.get_data()
-    contentj = request.get_json() #json.loads('["foo", {"bar":["baz", null, 1.0, 2]}]')
-    #print('#get raw data:\t', content)
-    #print('#get json:\t', contentj)
+@app.route('/_change_ssid', methods=['POST'])
+def change():
+    content = request.get_json()
+    print(content)
     
-    return render_template('small.html', content = contentj)
-
-#init
-users= {}
-for i in range(1, 6):
-    users['name' + str(i)]= i*11
-
-@app.route('/_add_user', methods=['POST'])
-def _add_user():
-    content = request.get_json()
-    global users
-    users[content['name']]= content['value']
-    #print('get')
-    return jsonify({'success': True, 'user': content['name'] })
-
+    return jsonify("")
 
 if __name__ == "__main__":
     app.run(threaded=True, debug=True, port=5000)

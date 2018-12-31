@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml"> 
+<!-- <html xmlns="http://www.w3.org/1999/xhtml">  -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,14 +6,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- chart -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
+
+    <style type="text/css">
+        .a
+        {
+          position:relative;
+          z-index:9;
+          /*position:fixed;*/
+        }
+    </style>
 
 </head>
 <body>
+	<div style="margin-left:15%; padding:1px 16px; height: 20%; background-color: #ffffff; padding-top: 6%;" id="main">
+    	<h1><b>Controller Information</b></h1>
 
-	<div style="margin-left:15%; padding:1px 16px; height:90%; background-color: #ffffff;" id="main">
-    	<h2>中間放AP資訊</h2> 
-    </div>
+	    <div class="a">
+    	    <div style="width: 20%; height: 20%; border:5px double black; padding:1%; position:relative; left:5%; float: left; top: 85px;">
+        	    <div style="font-size:30px; position:relative;">
+        	    	<p>controller狀態</p>
+        	    	<div style="width:100px; height:100px; background-color:white; border-radius:999em; border:solid 2px; position:relative; left: 30%; top: 20px; margin-bottom: 3%;"></div>
+        	    </div>
+            	<br>
+        	</div>
+        	<div class="block" style="height:20%; width:20%; border:5px double black; padding:1%; position:relative; left:15%; float: left; top: 85px;">
+        		<span style="font-size:30px;">
+        			已上線AP數量:
+        			<br>
+        			<br>
+        			<br>
+        			使用者數量:
+        		</span>
+        	</div>
+    	</div>
+		<!--graph-->
+<!--     <div style="top:10%; padding:1px 16px; width: 100%; height:100%; background-color: #ffffff; float: left;" id="main_chart">
+		<div class="wrapper" style="max-width: 800px; margin: 50px auto;">
+			<h1>登入人數變化</h1>
+			<canvas id="myChart" width="800" height="800"></canvas>
+		</div>
+	</div>
+	<script>
+		// Our labels along the x-axis
+		var time= [30,60,90,120,150,180,210,240,270,300];
+		// For drawing the lines
+		var count=[20,30,88,40,56,72,85,64,10,23,0,1,254,3,59]
+		
+		var ctx = document.getElementById("myChart");
+		var myChart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: time,
+				datasets: [{ 
+					data: count,
+					label: "Count",
+					borderColor: "#3e95cd",
+					fill: false
+				}]
+			}
+		});
+	</script> -->
 
+</div>
 </body>
 </html>
 

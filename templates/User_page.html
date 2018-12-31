@@ -1,6 +1,12 @@
 ﻿<!DOCTYPE html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <html>
 <head>	
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>User</title>
     <style type="text/css">
         div.table {
@@ -8,36 +14,8 @@
             padding: 10px 20px;
         }
 
-        #userTable {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-            width: 80%;
-            border: 3px solid black;
-            margin: 16px;
-            border-collapse: collapse;
-        }
-
-        th {
-            text-align: left;
-            padding: 8px;
-            background-color: #FFAA33;
-        }
-
-        td {
-            text-align: left;
-            padding: 8px;    
-        }
-
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }       
-
-        #userTable tr.header, #userTable tr:hover {
-            background-color: #f1f1f1;
-        }
-
         #userInput {
-            border: 1px solid #ddd;
+            border: 1px solid black;
             margin-bottom: 12px;
         }
     </style>
@@ -51,21 +29,13 @@
 				alert('index: '+index+'\n'+'name: '+name);
 				var data_j = {'index': index, 'name': name};
 				$("div#user_list").load_ajax( link_to_imformation, data_j); //可以接收到 UI_main_page 的變數
-			});
-			/*
-			$("td#user_choose").hover(function() {
-				$(this).css("font-size", "+=3px")
-				.css("padding", "+=10px")
-				.css("text-align", "center")
-				.css("color", "blue")
-				.css("font-weight", "bold");
-			}, function() {
-				$(this).css("font-size", "-=3px")
-				.css("padding", "-=10px")
-				.css("text-align", "left")
-				.css("color", "black")
-				.css("font-weight", "normal");
-			})*/
+            });
+            $('.js-pscroll').each(function(){
+                var ps = new PerfectScrollbar(this);
+                $(window).on('resize', function(){
+                ps.update();
+                })
+            });
         })
     </script>
     <script>
@@ -74,7 +44,7 @@
             var input, filter, table, tr, td, i, txtValue;
             input = document.getElementById("userInput");
             filter = input.value.toUpperCase();
-            table = document.getElementById("userTable");
+            table = document.getElementById("Table");
             tr = table.getElementsByTagName("tr");
             //Loop throught all table rows, and hide those who don't match the search query
             for (i=0; i<tr.length; i++)
@@ -96,20 +66,60 @@
 </head>
 
 <body>
-    <div id="user_list" class="table">
-    	<h2>User資訊</h2>
 
-		<input type="text" id="userInput" onkeyup="userFunction()" placeholder="Search for ID ..">
-		
-    	<table rules="all" id="userTable">
-    		<th>Connecting User</th>
+    <script type="text/javascript">
+        $(function () {
+            $("#Table").tablesorter({widgets: ['zebra']});
+        });
+    </script>
 
-			{% for e in users %}
-			<tr><td id='user_choose' data-index='{{ loop.index }}' data-name='{{ e }}'>
-				{{ loop.index }}. User {{ e }}: {{ users[e] }}
-			</td></tr>
-			{% endfor %}
-		</table>
-    </div>
+    <div id="user_list">
+        <div class="limiter" style="margin-left: 15%; padding-top: 5%; width: 85%; padding: 10px 20px;  padding-top: 6%;">
+            <h1><b>Connecting User</b></h1>
+            <input type="text" id="userInput" onkeyup="userFunction()" placeholder="Search for ID .." style="margin-left: 2%; margin-top: 3%; outline-style: solid; outline-width: 2px; padding: 4px;">
+            <div class="container-table100" style="justify-content: flex-start; min-height: 20vh;">
+                <div class="wrap-table100">
+                    <div class="table100 ver3 m-b-110">
+                        
+                            <table id="Table">
+                                <div class="table100-head">
+                                <thead>
+                                    <tr class="row100 head" style="cursor: pointer;">
+                                        <th class="cell100 column1">user_ID</th>
+                                        <th class="cell100 column2">username</th>
+                                        <th class="cell100 column3">password</th>
+                                        <th class="cell100 column4">email</th>
+                                        <th class="cell100 column5">register date</th>
+                                    </tr>
+                                </thead>
+                                </div>
+<!--                             </table>
+                        </div>
+
+                        <div class="table100-body js-pscroll">
+                            <table id="userTable"> -->
+                                <div class="js-pscroll">
+                                <tbody class="table100-body">
+                                    {# 從這裡開始 #}
+                                    {%- for user_id in users -%}
+                                    {% set user = users[ user_id ] %}
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">{{- user_id -}}</td>
+                                        <td class="cell100 column2">{{ user[0] }}</td>
+                                        <td class="cell100 column3">{{ user[1] }}</td>
+                                        <td class="cell100 column4">{{ user[2] }}</td>
+                                        <td class="cell100 column5">{{ user[3] }}</td>
+                                    </tr>
+                                    {%- endfor -%}
+                                    {# 到這裡結束 #}
+                                </tbody>
+                                </div>
+                            </table>    
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
 </body>
 </html>
