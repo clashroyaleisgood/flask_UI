@@ -23,6 +23,18 @@
             cursor: pointer;
         }
 
+        .limiter {
+            width: 100%;
+        }
+        /* 我不確定到時候會不會用到
+        .ssid_edit {
+            background: #FFDD55;
+            color: red;
+        }
+        .ssid_ori {
+            background: #DDDDDD;
+            color: #495057;
+        }*/
 	</style>
 
 
@@ -54,40 +66,42 @@
         //$("tr td:first-child").click(function () {
         $("tr td:first-child").click(function () {
             $("#aptable").hide();
-            data = {
+            var data = {
                 'ap_id': $(this).parent().attr("data-id")
             }
             $("#apform").post_ajax("{{url_for('imfor')}}", data, function (datain) {
                 //alert(datain['123']);
                 var ap_imfor= datain['data'];
                 $("input#ID").attr("placeholder", ap_imfor[0]);
-                id = $("input#ID").attr("placeholder");
-                $("input#MAC").attr("placeholder", ap_imfor[1]);
+                id = ap_imfor[0];
+                //$("input#MAC").attr("placeholder", ap_imfor[1]);
                 $("div#SSIDS").html("");
-                for(var i=0; i<ap_imfor[2].length; i++) {
+                for(var i=0; i<ap_imfor[1].length; i++) {
                     //alert(ap_imfor[2][i]);
                     $("div#SSIDS").append("<div class=\"form-group row\">"+
                         "<label for=\"inputSSID\" class=\"col-sm-2 col-form-label\">SSID "+ (i+1) +"</label>"+
                         "<div class=\"col-sm-4\">"+
-                            "<input type=\"text\" class=\"form-control\" style=\"background-color: #DDDDDD;\" id=\"inputSSID"+i+"\" placeholder=\"SSID\" value="+ ap_imfor[2][i] +" readonly data-type=\"read\">"+
-                            "</div><input type=\"button\" id=\"edit\" class=\"btn btn-primary mb-2\" value=\"修改\" onclick=\'processEdit(\"inputSSID"+i+"\");\'>"+
-                            "<input type=\"button\" id=\"confirm\" class=\"btn btn-primary mb-2\" value=\"確認\" onclick=\'processFormData(\"inputSSID"+i+"\");\'>"+
-                            "</div>");
+                        "<input type=\"text\" class=\"form-control\" style=\"background-color: #DDDDDD;\" id=\"inputSSID"+i+
+                        "\" placeholder=\"SSID\" value="+ ap_imfor[1][i][1] +" readonly data-type=\"read\" data-ssid_no=\""+ ap_imfor[1][i][0] +"\">"+
+                        "</div><input type=\"button\" id=\"edit\" class=\"btn btn-primary mb-2\" value=\"修改\" onclick=\'processEdit(\"inputSSID"+i+"\");\'>"+
+                        "<input type=\"button\" id=\"confirm\" class=\"btn btn-primary mb-2\" value=\"確認\" onclick=\'processFormData(\"inputSSID"+i+"\");\'>"+
+                        "<input type=\"button\" id=\"delete\" class=\"btn btn-primary mb-2\" value=\"刪除\" onclick=\'processDelete(\"inputSSID"+i+"\");\'>"+
+                        "</div>");
                 }
-                $("input#device_id").attr("placeholder", ap_imfor[3]);
-                $("input#cpu_usage").attr("placeholder", ap_imfor[4]);  //<status>
-                $("input#received").attr("placeholder", ap_imfor[5]);
-                $("input#transmit").attr("placeholder", ap_imfor[6]);
-                $("input#timestamp").attr("placeholder", ap_imfor[7]);  //</status>
-                $("input#gw_id").attr("placeholder", ap_imfor[8]);      //<node>
-                $("input#datetime").attr("placeholder", ap_imfor[9]);   //最後登陸時間
-                $("input#last_ip").attr("placeholder", ap_imfor[10]);
-                $("input#sys_uptime").attr("placeholder", ap_imfor[11]);
-                $("input#sys_memfree").attr("placeholder", ap_imfor[12]);
-                $("input#sys_load").attr("placeholder", ap_imfor[13]);
-                $("input#wifidog_uptime").attr("placeholder", ap_imfor[14]);
-                $("input#created_time").attr("placeholder", ap_imfor[15]);
-                $("input#update_time").attr("placeholder", ap_imfor[16]);//</node>
+                $("input#device_id").attr("placeholder", ap_imfor[2]);
+                $("input#cpu_usage").attr("placeholder", ap_imfor[3]);  //<status>
+                $("input#received").attr("placeholder", ap_imfor[4]);
+                $("input#transmit").attr("placeholder", ap_imfor[5]);
+                $("input#timestamp").attr("placeholder", ap_imfor[6]);  //</status>
+                $("input#gw_id").attr("placeholder", ap_imfor[7]);      //<node>
+                $("input#datetime").attr("placeholder", ap_imfor[8]);   //最後登陸時間
+                $("input#last_ip").attr("placeholder", ap_imfor[9]);
+                $("input#sys_uptime").attr("placeholder", ap_imfor[10]);
+                $("input#sys_memfree").attr("placeholder", ap_imfor[11]);
+                $("input#sys_load").attr("placeholder", ap_imfor[12]);
+                $("input#wifidog_uptime").attr("placeholder", ap_imfor[13]);
+                $("input#created_time").attr("placeholder", ap_imfor[14]);
+                $("input#update_time").attr("placeholder", ap_imfor[15]);//</node>
 
             });
 
@@ -95,16 +109,46 @@
             //alert("haha");
         });
         $("#back").click(function () {
-            $("#aptable").show();
-            $("#apform").hide();
+            if(detail_status == "idle") {
+                $("#aptable").show();
+                $("#apform").hide();
+            } else {
+                alert("something not finished?");
+            }
+        });
+        $("input#add_ssid").click(function() {
+            if(detail_status == "idle") {
+                detail_status = "add_ssid";
+                $(this).next().show();
+                $("input#inputNewSSID").val("");
+                $(this).val("取消");
+            } else if(detail_status == "add_ssid") {
+                detail_status = "idle";
+                $(this).val("新增 SSID");
+                $(this).next().hide();
+            }
+        });
+        $("input#confirm_add").click(function() {
+            if($(this).prev().children().val() == "" ) {   //新增空字串 AP
+                alert("AP name 不能為空");
+            } else if(confirm('really !?') == true) {
+                data = {'ap_id': id, 'ssid': $(this).prev().children().val() };
+                $(this).post_ajax("{{ url_for('add_ssid') }}", data, function(){} );
+                alert("已送出 請稍等");
+                detail_status = "idle";
+                $("input#add_ssid").val("新增 SSID");
+                $("input#add_ssid").next().hide();
+
+            }
         });
     });
     // 進行修改
-    var edit = false;
+    var detail_status= "idle";
     var id;
     var ssid_from="";
     function processEdit(z) {
-        if(!edit){
+        if(detail_status == "idle"){
+        detail_status = "edit_ssid";
         var ssid=$("#"+z);
         if( ssid.attr("data-type") == "read" ){
             ssid_from = ssid.val() ;            //input 的 value 要用 .val() 不能用 .attr("value")
@@ -118,7 +162,6 @@
                     "data-type": "edit",
                     "data-from": ssid.attr("value")
             });
-            edit = true;
             //alert('type: '+ ssid.attr("data-type"));
             //alert("change"+ ssid_from);
             //alert("id= "+ id);
@@ -127,9 +170,10 @@
 
     // 確認修改並取得ssid改變的值
     function processFormData(z) {
-        if(edit) {
+        if(detail_status == "edit_ssid") {
         var ssid=$("#"+z);
         if( ssid.attr("data-type") == "edit" ){
+            detail_status = "idle";
             //alert('type: '+ ssid.attr("data-type"));
             ssid.css({
                 "background": "#DDDDDD",
@@ -143,16 +187,26 @@
             //alert('value: '+ ssid.val());
             
             var ssid_to= ssid.val();
+            var ssid_no= ssid.attr("data-ssid_no");
             if( ssid_from == ssid_to ){
                 alert("same ssid");
             }
             else {
-                data={'ap_id': id, 'from': ssid_from, 'to': ssid_to };
+                var data={'ap_id': id, 'ssid_no': ssid_no, 'from': ssid_from, 'to': ssid_to };
                 ssid.post_ajax("{{ url_for('change') }}", data, function(){} );
                 alert("send");
             }
-            edit = false;
         }}
+    }
+    function processDelete(z) {
+        if(detail_status == "idle"){
+            var ssid=$("#"+z);
+            if(confirm("really !?")) {
+                var ssid_no= ssid.attr("data-ssid_no");
+                var data= {'ap_id': id, 'ssid_no': ssid_no, 'ssid': ssid.val() };
+                ssid.post_ajax("{{ url_for('delete') }}", data, function(){} );
+            }
+        }
     }
 </script>
 </head>
@@ -166,7 +220,7 @@
     </script>
 
     <div id="aptable">
-        <div class="limiter" style="margin-left: 15%; padding-top: 5%; width: 85%; padding: 10px 20px;  padding-top: 6%;">
+        <div class="limiter">
             <h1><b>AP</b></h1>
             <input type="text" id="apInput" onkeyup="apFunction()" placeholder="Search for ID .." style="margin-left: 2%; margin-top: 3%; outline-style: solid; outline-width: 2px; padding: 4px;">
             <div class="container-table100" style="justify-content: flex-start; min-height: 20vh;">
@@ -180,7 +234,7 @@
                                 <tr class="row100 head" style="cursor: pointer;">
                                     <th class="cell100 column1">name</th>
                                     <th class="cell100 column2">ID</th>
-                                    <th class="cell100 column3">MAC</th>
+                                    <!--沒有MAC了 <th class="cell100 column3">MAC</th>-->
                                     <th class="cell100 column4">SSID</th>
                                 </tr>
                             </thead>
@@ -197,8 +251,12 @@
 								<tr class="row100 body" data-id=" {{ ap_id }} ">
 									<td class="cell100 column1">{{ nodes[ ap_id ][0] }}</td>{# from node table #}
 									<td class="cell100 column2">{{ ap_id }}</td>
-									<td class="cell100 column3">{{ ap[0] }}</td>
-									<td class="cell100 column4">{{ ap[1] }}</td>
+									{# <!--<td class="cell100 column3">{{ ap[0] }}</td>--> -#}
+									<td class="cell100 column4">
+                                    {%- for e in ap -%}
+                                    {{ e[1]|string +"," }}  {# e[1] -> ssid #}
+                                    {%- endfor -%}
+                                    </td>
 								</tr>
 								{%- endfor -%}
 								{# 到這裡結束 #}
@@ -212,7 +270,7 @@
             </div>
         </div>
     </div>
-    <div id="apform" class="limiter" style="margin-left: 15%; padding-top: 5%; width: 85%; padding: 10px 20px; display: none; padding-top: 6%;">
+    <div id="apform" class="limiter" style="display: none;">
         <h1>Information</h1>
         <form>
                 <div class="form-group row">
@@ -221,12 +279,12 @@
                         <input type="text" readonly class="form-control" id="ID" placeholder="ID">
                     </div>
                 </div>
-                <div class="form-group row">
+                <!--<div class="form-group row">
                     <label for="MAC" class="col-sm-2 col-form-label">MAC</label>
                     <div class="col-sm-4">
                         <input type="number" readonly class="form-control" id="MAC" placeholder="MAC">
                     </div>
-                </div>
+                </div>-->
                 <div id="SSIDS">
                     <div class="form-group row"><!--舊資料會被刷掉-->
                         <label for="inputSSID" class="col-sm-2 col-form-label">SSID</label>
@@ -235,6 +293,17 @@
                         </div>
                         <input type="button" id="edit" class="btn btn-primary mb-2" value="修改" onclick='processEdit("inputSSID1");'>
                         <input type="button" id="confirm" class="btn btn-primary mb-2" value="確認" onclick='processFormData("inputSSID1");'>
+                    </div>
+                </div>
+                <div>
+                    <input type="button" id="add_ssid" class="btn btn-primary mb-2" value="新增 SSID">
+                    
+                    <div class="form-group row" id="newSSID" style= "display: none;">
+                        <label for="inputSSID" class="col-sm-2 col-form-label">SSID new</label>
+                        <div class="col-sm-4">
+                        <input type="text" class="form-control" style="background-color: #FFDD55; color: red;" id="inputNewSSID" placeholder="SSID">
+                        </div>
+                        <input type="button" id="confirm_add" class="btn btn-primary mb-2" value="確認">
                     </div>
                 </div>
                 <div class="form-group row">

@@ -76,11 +76,12 @@ def main():
     return render_template('UI_main_page.html')
 
 
+status= 'work'      #"work" or "fail"
 @app.route('/main/', methods=['GET'])
 def main_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
-    return render_template('main_page.html')
+    return render_template('main_page.html', graph_data= get_graph() , status= status)
 
 
 @app.route('/AP/', methods=['GET'])
@@ -115,7 +116,7 @@ def about_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
     return '''
-	<div style="margin-left:15%; padding:1px 16px; height: 20%; background-color: #ffffff; padding-top: 6%;" id="main">
+	<div style="width: 100%;">
     none
     <div>
     '''
@@ -148,13 +149,12 @@ def get_ap_name(ind = 0):
     apna={}
     if ind == 0:
         for i in range(1, AP_num+1):
-            apna[str(i) ]=['name'+str(j) for j in range(i+1, i+3)]
-            apna[str(i) ][1]=[21, 22, 23]
+            apna[str(i) ]=[[21, 'id2121'], [22, 'id2222'], [23, 'id2323'] ]
+            #apna[str(i) ][1]=[21, 22, 23]
         return apna
     else:
         i= 1
-        ret_list = ['name'+str(j) for j in range(i+1, i+3)]
-        ret_list[1]=[21,22,23]
+        ret_list = [[21, 'id2121'], [22, 'id2222'], [23, 'id2323'] ]
         return ret_list
 
 def get_users(ind = 0):
@@ -166,6 +166,9 @@ def get_users(ind = 0):
     else:
         i = 1
         return [j for j in range(i+1, i+5)]
+
+def get_graph():
+    return [i*10 for i in range(1, 25)]
 # -----------------------------------------------------
 
 @app.route('/_imfor', methods=['POST'])
@@ -179,17 +182,28 @@ def imfor():
     node= get_node(id)
     data=[]
     data+= [id]         #0
-    data+= name[:]      #1 2
-    data+= [id]         #3 device id
-    data+= status[:]    #4 5 6 7
-    data+= node[1:]     #8 ~ 16
+    data+= [name[:] ]   #1  #1 2 3...?
+    data+= [id]         #2 device id
+    data+= status[:]    #3 4 5 6
+    data+= node[1:]     #7 ~ 15
     return jsonify({'data':data})
-
+#                                           AP_page 用到的
 @app.route('/_change_ssid', methods=['POST'])
 def change():
     content = request.get_json()
     print(content)
-    
+    return jsonify("")
+
+@app.route('/_delete_ssid', methods=['POST'])
+def delete():
+    content = request.get_json()
+    print(content)
+    return jsonify("")
+
+@app.route('/_add_ssid', methods=['POST'])
+def add_ssid():
+    content = request.get_json()
+    print(content)
     return jsonify("")
 
 if __name__ == "__main__":

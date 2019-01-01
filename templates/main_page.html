@@ -20,14 +20,23 @@
 
 </head>
 <body>
-	<div style="margin-left:15%; padding:1px 16px; height: 20%; background-color: #ffffff; padding-top: 6%;" id="main">
+	<div id="main">
     	<h1><b>Controller Information</b></h1>
 
 	    <div class="a">
     	    <div style="width: 20%; height: 20%; border:5px double black; padding:1%; position:relative; left:5%; float: left; top: 85px;">
         	    <div style="font-size:30px; position:relative;">
         	    	<p>controller狀態</p>
-        	    	<div style="width:100px; height:100px; background-color:white; border-radius:999em; border:solid 2px; position:relative; left: 30%; top: 20px; margin-bottom: 3%;"></div>
+        	    	<div style="width:100px; height:100px; background-color:white; border-radius:999em; border:solid 2px; position:relative; left: 30%; top: 20px; margin-bottom: 3%;">
+						<!-- 狀態顯示 -->
+						{% if status == "work" %}
+                        <!-- 綠V -->
+						<i class="fas fa-check" style="font-size:80px; color:green; position:relative; left:8%; top:10%;"></i>
+						{% elif status == "fail" %}
+                        <!-- 紅X -->
+						<i class="fas fa-times" style="font-size:80px; color:red; position:relative; left:22%; top:10%;"></i>
+						{% endif %}
+                    </div>
         	    </div>
             	<br>
         	</div>
@@ -42,17 +51,17 @@
         	</div>
     	</div>
 		<!--graph-->
-<!--     <div style="top:10%; padding:1px 16px; width: 100%; height:100%; background-color: #ffffff; float: left;" id="main_chart">
+    <div style="top:10%; padding:1px 16px; width: 70%; height:100%; background-color: #ffffff; float: left; margin-top: 12%;" id="main_chart">
 		<div class="wrapper" style="max-width: 800px; margin: 50px auto;">
 			<h1>登入人數變化</h1>
-			<canvas id="myChart" width="800" height="800"></canvas>
+			<canvas id="myChart" width="500" height="300"></canvas>
 		</div>
 	</div>
 	<script>
 		// Our labels along the x-axis
-		var time= [30,60,90,120,150,180,210,240,270,300];
+		var time= [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ,15 ,16 ,17 ,18 ,19 ,20 ,21 ,22, 23, 24];
 		// For drawing the lines
-		var count=[20,30,88,40,56,72,85,64,10,23,0,1,254,3,59]
+		var count={{ graph_data }}
 		
 		var ctx = document.getElementById("myChart");
 		var myChart = new Chart(ctx, {
@@ -67,7 +76,7 @@
 				}]
 			}
 		});
-	</script> -->
+	</script>
 
 </div>
 </body>
