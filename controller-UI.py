@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request, url_for, redirect, flash
 from flask_login import LoginManager, UserMixin, login_user, current_user, login_required, logout_user
-import time
+import get_DB as db
 
 app = Flask(__name__)
 #-------------------------------------------------------------        login
@@ -69,19 +69,34 @@ def logout():
 #-------------------------------------------------------------      end login
 #--------------------------------------------------------------------------------------- HTMLs
 
+def try_connect_db():
+    global status
+    db.mycursor = db.connect_to_mysql()
+    if db.mycursor:
+        status = 'work'
+
 @app.route('/', methods=['GET'])
 def main():
     if not current_user.is_active:              #這兩行用來檢測使用者登入狀況
         return redirect( url_for( 'login'))
+    if status == 'fail':
+        print('status original fail')
+        try_connect_db()
     return render_template('UI_main_page.html')
 
 
-status= 'work'      #"work" or "fail"
+status= 'fail'      #"work" or "fail"
 @app.route('/main/', methods=['GET'])
 def main_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
-    return render_template('main_page.html', graph_data= get_graph() , status= status)
+    if status == 'work':
+        ap= str(len(db.get_servdev() )) +'/'+ str(len(db.get_ap_device() ))
+        user= str(len(db.get_online() )) +'/'+ str(len(db.get_users() ))
+        graph_data= db.get_avetime()
+    else:
+        ap, user, graph_data =['not connect']*3
+    return render_template('main_page.html', graph_data= graph_data , status= status, ap= ap, user= user)
 
 
 @app.route('/AP/', methods=['GET'])
@@ -89,26 +104,19 @@ def ap_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
     data={}
-    data['ap_names'] = get_ap_name()
-    data['ap_status']= get_ap_status()
-    data['nodes'] = get_node()
+    data['ap_names'] = db.get_ap_device()
+    data['ap_status']= db.get_ap_status()
+    data['nodes'] = db.get_node()
     return render_template('AP_page.html', **data)      # 一次送三個table過去
-'''
-@app.route('/AP_detail/<int:AP_id>')
-def ap_detail(AP_id):
-    if isinstance(AP_id, int):
-        return 'find id in table'
-    return """ <script>alert("Error:""" + AP_id + """ is not a number");</script> """
 
-@app.route('/APdetail/', methods=['GET'])       #detail from pa en
-def ap_detailed():
-    return render_template('AP_detail.html')
-'''
+
 @app.route('/User/', methods=['GET'])
 def user_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
-    return render_template('User_page.html', users= get_users() )
+    if status != 'work':
+        return "<h1>Not connect</h1>"
+    return render_template('User_page.html', users= db.get_users() )
 
 
 @app.route('/about/', methods=['GET', 'POST'])
@@ -133,7 +141,7 @@ def get_node(ind = 0):
         return nodes
     else:
         i= 1
-        return ['nod'+str(j) for j in range(i+1, i+11)]
+        return { ind: ['name+', 'gw_id+', '最後登陸時間+', 'wan_ip+', 'sys_uptime+', 'sys_memfree+', 'sys_load+', 'wifidog_uptime+', 'create_time+', 'update_time+']}
 
 def get_ap_status(ind = 0):
     apdb={}
@@ -143,19 +151,18 @@ def get_ap_status(ind = 0):
         return apdb
     else:
         i= 1
-        return ['sta'+str(j) for j in range(i+1, i+5)]
+        return {ind: ['cpu_usage+', 'received+', 'transmit+', 'timestamp+']}
 
-def get_ap_name(ind = 0):
+def get_ap_device(ind = 0):
     apna={}
     if ind == 0:
         for i in range(1, AP_num+1):
-            apna[str(i) ]=[[21, 'id2121'], [22, 'id2222'], [23, 'id2323'] ]
-            #apna[str(i) ][1]=[21, 22, 23]
+            apna[str(i) ]=['id2121', 'wpa+', '123+']
         return apna
     else:
         i= 1
-        ret_list = [[21, 'id2121'], [22, 'id2222'], [23, 'id2323'] ]
-        return ret_list
+        ret_list = ['id2121', 'PSK2', '123+']
+        return {ind: ret_list}
 
 def get_users(ind = 0):
     userdb={}
@@ -177,6 +184,7 @@ def imfor():
     id = int( content['ap_id'] )
     #data=[i for i in range(start, start +17)]
     #data[2]=[21, 22, 23, 24]
+    '''
     name= get_ap_name(id)
     status= get_ap_status(id)
     node= get_node(id)
@@ -186,14 +194,32 @@ def imfor():
     data+= [id]         #2 device id
     data+= status[:]    #3 4 5 6
     data+= node[1:]     #7 ~ 15
-    return jsonify({'data':data})
+    '''
+    data={}
+    data['name']= db.get_ap_device(id)[id]     #回傳的竟然是 dict ==+
+    data['status']= db.get_ap_status(id)[id]
+    data['node']= db.get_node(id)[id]
+    data['id']= id
+    return jsonify(data)
 #                                           AP_page 用到的
-@app.route('/_change_ssid', methods=['POST'])
-def change():
+@app.route('/_change_ssid/', methods=['POST'])
+def change_ssid():
     content = request.get_json()
     print(content)
     return jsonify("")
 
+@app.route('/_change_encryption/', methods=['POST'])
+def change_encry():
+    content = request.get_json()
+    print(content)
+    return jsonify("")
+
+@app.route('/_change_key/', methods=['POST'])
+def change_key():
+    content = request.get_json()
+    print(content)
+    return jsonify("")
+'''
 @app.route('/_delete_ssid', methods=['POST'])
 def delete():
     content = request.get_json()
@@ -205,8 +231,9 @@ def add_ssid():
     content = request.get_json()
     print(content)
     return jsonify("")
-
+'''
 if __name__ == "__main__":
+    try_connect_db()
+
     app.run(threaded=True, debug=True, port=5000)
-    #app.run(host= '10.140.0.3',debug=True, threaded=True, port=27015)
-    #app.run(host= '10.140.0.4',debug=True, threaded=True, port=27015)
+    #app.run(host= '10.140.0.4',debug=True, threaded=True, port=27016)

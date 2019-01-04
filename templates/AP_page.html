@@ -61,52 +61,46 @@
         }
     }
 
+    var ap_id;
+    var detail_status= "idle";
     // apdetail
     $(document).ready(function () {
-        //$("tr td:first-child").click(function () {
+        function refresh_detail(data_trans) {
+            $("#apform").post_ajax("{{url_for('imfor')}}", data_trans, function (data) {
+                
+                //console.log(data);
+                ap_id = data.id;
+                $("#ID").attr("value", data.id);
+                $('#ssid').val(data.name[0]);
+                $("#encryption").val(data.name[1]);
+                $("#key").val(data.name[2]);
+                if($("#encryption").val() == 'None')
+                    $("#key_parent").hide();
+                $("#device_id").attr("value", data.id);
+                $("#cpu_usage").attr("value", data.status[0]);
+                $("#received").attr("value", data.status[1]);
+                $("#transmit").attr("value", data.status[2]);
+                $("#timestamp").attr("value", data.status[3]);
+                $("#gw_id").attr("value", data.node[1]);
+                $("#datetime").attr("value", data.node[2]);   //最後登陸時間
+                $("#last_ip").attr("value", data.node[3]);
+                $("#sys_uptime").attr("value", data.node[4]);
+                $("#sys_memfree").attr("value", data.node[5]);
+                $("#sys_load").attr("value", data.node[6]);
+                $("#wifidog_uptime").attr("value", data.node[7]);
+                $("#created_time").attr("value", data.node[8]);
+                $("#update_time").attr("value", data.node[9]);
+            });
+        }
+
         $("tr td:first-child").click(function () {
             $("#aptable").hide();
-            var data = {
+            var data_trans = {
                 'ap_id': $(this).parent().attr("data-id")
             }
-            $("#apform").post_ajax("{{url_for('imfor')}}", data, function (datain) {
-                //alert(datain['123']);
-                var ap_imfor= datain['data'];
-                $("input#ID").attr("placeholder", ap_imfor[0]);
-                id = ap_imfor[0];
-                //$("input#MAC").attr("placeholder", ap_imfor[1]);
-                $("div#SSIDS").html("");
-                for(var i=0; i<ap_imfor[1].length; i++) {
-                    //alert(ap_imfor[2][i]);
-                    $("div#SSIDS").append("<div class=\"form-group row\">"+
-                        "<label for=\"inputSSID\" class=\"col-sm-2 col-form-label\">SSID "+ (i+1) +"</label>"+
-                        "<div class=\"col-sm-4\">"+
-                        "<input type=\"text\" class=\"form-control\" style=\"background-color: #DDDDDD;\" id=\"inputSSID"+i+
-                        "\" placeholder=\"SSID\" value="+ ap_imfor[1][i][1] +" readonly data-type=\"read\" data-ssid_no=\""+ ap_imfor[1][i][0] +"\">"+
-                        "</div><input type=\"button\" id=\"edit\" class=\"btn btn-primary mb-2\" value=\"修改\" onclick=\'processEdit(\"inputSSID"+i+"\");\'>"+
-                        "<input type=\"button\" id=\"confirm\" class=\"btn btn-primary mb-2\" value=\"確認\" onclick=\'processFormData(\"inputSSID"+i+"\");\'>"+
-                        "<input type=\"button\" id=\"delete\" class=\"btn btn-primary mb-2\" value=\"刪除\" onclick=\'processDelete(\"inputSSID"+i+"\");\'>"+
-                        "</div>");
-                }
-                $("input#device_id").attr("placeholder", ap_imfor[2]);
-                $("input#cpu_usage").attr("placeholder", ap_imfor[3]);  //<status>
-                $("input#received").attr("placeholder", ap_imfor[4]);
-                $("input#transmit").attr("placeholder", ap_imfor[5]);
-                $("input#timestamp").attr("placeholder", ap_imfor[6]);  //</status>
-                $("input#gw_id").attr("placeholder", ap_imfor[7]);      //<node>
-                $("input#datetime").attr("placeholder", ap_imfor[8]);   //最後登陸時間
-                $("input#last_ip").attr("placeholder", ap_imfor[9]);
-                $("input#sys_uptime").attr("placeholder", ap_imfor[10]);
-                $("input#sys_memfree").attr("placeholder", ap_imfor[11]);
-                $("input#sys_load").attr("placeholder", ap_imfor[12]);
-                $("input#wifidog_uptime").attr("placeholder", ap_imfor[13]);
-                $("input#created_time").attr("placeholder", ap_imfor[14]);
-                $("input#update_time").attr("placeholder", ap_imfor[15]);//</node>
-
-            });
+            refresh_detail(data_trans );
 
             $("#apform").fadeIn();
-            //alert("haha");
         });
         $("#back").click(function () {
             if(detail_status == "idle") {
@@ -116,6 +110,7 @@
                 alert("something not finished?");
             }
         });
+        //{#
         $("input#add_ssid").click(function() {
             if(detail_status == "idle") {
                 detail_status = "add_ssid";
@@ -141,10 +136,130 @@
 
             }
         });
+        //#}
+        $("#edit_ssid").click(function(){
+            if(detail_status == 'idle') {
+                var ssid= $("#ssid");
+                ssid.css({
+                    "background": "#FFDD55",
+                    "color": "red"
+                })
+                    .removeAttr("readonly")
+                    .attr("data-original", ssid.val() );
+                //alert(ssid.val() );
+                
+                detail_status= 'edit_ssid';
+            }
+        });
+        $("#confirm_ssid").click(function(){
+            if(detail_status == 'edit_ssid') {
+                var ssid= $("#ssid"), ssid_value= ssid.val();
+                var original= ssid.attr("data-original");
+                ssid.removeAttr("data-original");
+
+                if(original == ssid_value ) {
+                    alert("Same ssid");
+                } else if(ssid_value == "") {
+                    alert("SSID can't be empty!");
+                    ssid.val(original );
+                } else {
+                    data= {'ap_id': ap_id, 'new_ssid': ssid_value }
+                    $(this).post_ajax("{{ url_for('change_ssid') }}", data, alert("Send") );
+                    refresh_detail({'ap_id': ap_id} );
+                    $("#apform").hide();
+                    $("#apform").fadeIn();
+                }
+                ssid.css({
+                    "background": "",
+                    "color": ""
+                })
+                    .attr({
+                        "readonly": "true",
+                });
+                detail_status = 'idle';
+            }
+        });
+
+        $("#edit_encrypt").click(function(){
+            if(detail_status == 'idle') {
+                var encry= $("#encryption");
+                alert(encry.find(":selected").text() );
+                encry.attr("data-original", encry.find(":selected").text() )
+                encry.removeAttr("disabled");
+                detail_status =  'edit_encry';
+            }
+        });
+        $("#confirm_encrypt").click(function(){
+            if(detail_status == 'edit_encry') {
+                var encry= $("#encryption");
+                var original= encry.attr("data-original");
+                encry.removeAttr("data-original");
+
+                encry.attr("disabled", "");
+                if(original == encry.find(":selected").text()) {
+                    alert("same");
+                } else {
+                    var data = {'ap_id': ap_id, 'encry': encry.find(":selected").text() };
+                    $(this).post_ajax("{{ url_for('change_encry') }}", data, function(){});
+                    refresh_detail({'ap_id': ap_id} );
+                    $("#apform").hide();
+                    $("#apform").fadeIn();
+                }
+
+                detail_status = 'idle';
+            }
+        });
+
+        $("#edit_key").click(function(){
+            if(detail_status == 'idle') {
+                var key= $("#key");
+                key.css({
+                    "background": "#FFDD55",
+                    "color": "red"
+                })
+                    .removeAttr("readonly")
+                    .attr("data-original", key.val() );
+                alert(key.val() );
+                
+                detail_status= 'edit_key';
+            }
+        });
+        $("#confirm_key").click(function(){
+            if(detail_status == 'edit_key') {
+                var key= $("#key"), key_value= key.val();
+                var original= key.attr("data-original");
+                key.removeAttr("data-original");
+
+                if(original == key_value ) {
+                    alert("Same key");
+                } else if(key_value == "") {
+                    alert("key can't be empty!");
+                    key.val(original );
+                } else {
+                    data= {'ap_id': ap_id, 'new_key': key_value }
+                    $(this).post_ajax("{{ url_for('change_key') }}", data, alert("Send") );
+                    refresh_detail({'ap_id': ap_id} );
+                    $("#apform").hide();
+                    $("#apform").fadeIn();
+                }
+                key.css({
+                    "background": "",
+                    "color": ""
+                })
+                    .attr({
+                        "readonly": "true"
+                });
+                detail_status = 'idle';
+            }
+        });
+        $("#123").click(function(){
+            refresh_detail({'ap_id': ap_id} );
+            $("#apform").hide();
+            $("#apform").fadeIn();
+        });
     });
     // 進行修改
-    var detail_status= "idle";
-    var id;
+    //{#
     var ssid_from="";
     function processEdit(z) {
         if(detail_status == "idle"){
@@ -193,7 +308,7 @@
             }
             else {
                 var data={'ap_id': id, 'ssid_no': ssid_no, 'from': ssid_from, 'to': ssid_to };
-                ssid.post_ajax("{{ url_for('change') }}", data, function(){} );
+                ssid.post_ajax("{{ url_for('change_ssid') }}", data, function(){} );
                 alert("send");
             }
         }}
@@ -208,6 +323,7 @@
             }
         }
     }
+    //#}
 </script>
 </head>
 
@@ -252,11 +368,7 @@
 									<td class="cell100 column1">{{ nodes[ ap_id ][0] }}</td>{# from node table #}
 									<td class="cell100 column2">{{ ap_id }}</td>
 									{# <!--<td class="cell100 column3">{{ ap[0] }}</td>--> -#}
-									<td class="cell100 column4">
-                                    {%- for e in ap -%}
-                                    {{ e[1]|string +"," }}  {# e[1] -> ssid #}
-                                    {%- endfor -%}
-                                    </td>
+									<td class="cell100 column4">{{ ap[0] }}</td>
 								</tr>
 								{%- endfor -%}
 								{# 到這裡結束 #}
@@ -284,9 +396,9 @@
                     <div class="col-sm-4">
                         <input type="number" readonly class="form-control" id="MAC" placeholder="MAC">
                     </div>
-                </div>-->
+                </div>
                 <div id="SSIDS">
-                    <div class="form-group row"><!--舊資料會被刷掉-->
+                    <div class="form-group row">
                         <label for="inputSSID" class="col-sm-2 col-form-label">SSID</label>
                         <div class="col-sm-4">
                             <input type="text" class="form-control" style="background-color: #DDDDDD;" id="inputSSID1" placeholder="SSID" value="0000" readonly>
@@ -305,6 +417,34 @@
                         </div>
                         <input type="button" id="confirm_add" class="btn btn-primary mb-2" value="確認">
                     </div>
+                </div>-->
+                
+		        <div class="form-group row">
+                    <label for="ssid" class="col-sm-2 col-form-label">SSID</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control" id="ssid" placeholder="SSID">
+                    </div>
+                    <input type="button" id="edit_ssid" class="btn btn-primary mb-2" value="修改" style="margin-right: 10px;">
+                    <input type="button" id="confirm_ssid" class="btn btn-primary mb-2" value="確認">
+		        </div>
+		        <div class="form-group row">
+		            <label for="encryption" class="col-sm-2 col-form-label">Encryption</label>
+		            <div class="col-sm-4">
+   		                <select class="form-control" id='encryption' disabled>
+			                <option value='None'>None</option>
+                            <option value="PSK2">PSK2</option>
+			            </select>
+                    </div>
+                    <input type="button" id="edit_encrypt" class="btn btn-primary mb-2" value="修改" style="margin-right: 10px;">
+                    <input type="button" id="confirm_encrypt" class="btn btn-primary mb-2" value="確認">
+		        </div>
+                <div class="form-group row" id="key_parent">
+                    <label for="key" class="col-sm-2 col-form-label">Key</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control" id="key" placeholder="key">
+                    </div>
+                    <input type="button" id="edit_key" class="btn btn-primary mb-2" value="修改" style="margin-right: 10px;">
+                    <input type="button" id="confirm_key" class="btn btn-primary mb-2" value="確認">
                 </div>
                 <div class="form-group row">
                     <label for="device_id" class="col-sm-2 col-form-label">Device ID</label>
@@ -315,19 +455,19 @@
                 <div class="form-group row">
                     <label for="cpuusage" class="col-sm-2 col-form-label">CPU Usage</label>
                     <div class="col-sm-4">
-                        <input type="number" readonly class="form-control" id="cpu_usage" placeholder="data">
+                        <input type="text" readonly class="form-control" id="cpu_usage" placeholder="data">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="received" class="col-sm-2 col-form-label">Received Data</label>
                     <div class="col-sm-4">
-                        <input type="number" readonly class="form-control" id="received" placeholder="data">
+                        <input type="text" readonly class="form-control" id="received" placeholder="data">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="transmit" class="col-sm-2 col-form-label">Transmit Data</label>
                     <div class="col-sm-4">
-                        <input type="number" readonly class="form-control" id="transmit" placeholder="data">
+                        <input type="text" readonly class="form-control" id="transmit" placeholder="data">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -339,7 +479,7 @@
                 <div class="form-group row">
                     <label for="gw_id" class="col-sm-2 col-form-label">gw_ID</label>
                     <div class="col-sm-4">
-                        <input type="number" readonly class="form-control" id="gw_id" placeholder="ID">
+                        <input type="text" readonly class="form-control" id="gw_id" placeholder="ID">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -351,7 +491,7 @@
                 <div class="form-group row">
                     <label for="last_ip" class="col-sm-2 col-form-label">Last_IP</label>
                     <div class="col-sm-4">
-                        <input type="number" readonly class="form-control" id="last_ip" placeholder="IP">
+                        <input type="text" readonly class="form-control" id="last_ip" placeholder="IP">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -363,13 +503,13 @@
                 <div class="form-group row">
                     <label for="sys_memfree" class="col-sm-2 col-form-label">System Memfree</label>
                     <div class="col-sm-4">
-                        <input type="number" readonly class="form-control" id="sys_memfree" placeholder="sys_memfree">
+                        <input type="text" readonly class="form-control" id="sys_memfree" placeholder="sys_memfree">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="sys_load" class="col-sm-2 col-form-label">System Load</label>
                     <div class="col-sm-4">
-                        <input type="number" readonly class="form-control" id="sys_load" placeholder="Load data">
+                        <input type="text" readonly class="form-control" id="sys_load" placeholder="Load data">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -390,7 +530,9 @@
                         <input type="text" readonly class="form-control" id="update_time" placeholder="time">
                     </div>
                 </div>
-                <input type="text" readonly class="form-control backhover" style="width: 5%; cursor: pointer;" id="back" value="back">
+                <input type="text" readonly class="form-control backhover" style="width: 5%; cursor: pointer; text-align: center;" id="back" value="back">
+                <input type="text" readonly class="form-control backhover" style="width: 5%; cursor: pointer; text-align: center;" id="123" value="refresh">
+
         </form>
     </div>
     

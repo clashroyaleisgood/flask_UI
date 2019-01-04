@@ -71,6 +71,9 @@
                 $('#con').load(temp);
             
             });
+            $("#refresh").click(function(){
+                $('#con').load(ret_html(page_select ));
+            });
         })
     </script>
 
@@ -101,6 +104,7 @@
                 <span style="padding:2%; font-size:40px; color:white;"> 
                     <i class='fab fa-forumbee' style="font-size:36px"></i>  AP Controller
                 </span>
+		<a href= "{{ url_for('logout') }}" ><button type="button" class="btn btn-outline-success" style="right:1%; position:absolute; width:6%; top:10%;"><b><i class="fas fa-sign-out-alt" style="font-size:28px"></i>logout</b></button></a>
             </div>  
         </header>
 
@@ -110,13 +114,12 @@
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="user"><b><i class="fas fa-user" style="font-size:28px"></i>User管理</b></button>
                 <div class="dropdown-menu">
-                    <button type="button" class="dropdown-item" id="adduser" style="width: 100%; height: 15%">Add User</button>
-                    <button type="button" class="dropdown-item" id="deluser" style="width: 100%; height: 15%">Delete User</button>
+                    <a href="http://35.221.194.17/login" target="_blank"><button type="button" class="dropdown-item" id="adduser" style="width: 100%; height: 15%">Add User</button></a>
+                    <a href="http://35.221.194.17/admin" target="_blank"><button type="button" class="dropdown-item" id="deluser" style="width: 100%; height: 15%">Delete User</button></a>
                 </div>            
             </div>
             <button type="button" class="btn btn-outline-success" id="about"><b><i class="fas fa-pen" style="font-size:28px"></i>About</b></button>
-            <a href= "{{ url_for('logout') }}" ><button type="button" class="btn btn-outline-success"><b><i class="fas fa-sign-out-alt" style="font-size:28px"></i>logout</b></button></a>
-            
+	        <button type="button" class="btn btn-outline-success" id="refresh"><b><i class="fas fa-sync-alt" style="font-size:28px;"></i>Refresh</b></button>
         </div>
     </div>
     <div id="con" style="margin-left:15%; padding:1px 16px; height: 20%; background-color: #ffffff; padding-top: 6%;"></div>
