@@ -21,8 +21,8 @@
 	<div id="main">
     	<h1><b>Controller Information</b></h1>
 
-	    <div class="a">
-    	        <div style="width: 30%; height: 20%; border:5px double black; padding:1%; position:relative; left:10%; float: left;  top: 40px;">
+	    <div class="a" style="display:inline-block; width:30%; float:left;">
+			<div style="width: 100%; height: 20%; border:5px double black; padding:1%; position:relative; left:10%; top: 50px;">
         	    <div style="font-size:30px; position:relative;">
         	    	<p>controller狀態</p>
         	    	<div style="width:100px; height:100px; background-color:white; border-radius:999em; border:solid 2px; position:relative; left: 35%; top: 20px; margin-bottom: 3%;">
@@ -38,7 +38,7 @@
         	    </div>
         	<br>
 		</div>
-        	<div class="block" style="width:30%; height:20%; border:5px double black; padding: 1%;  position:relative; left:20%; top: 40px; float:left;">
+		<div class="block" style="width:100%; height:20%; border:5px double black; padding: 1%;  position:relative; left:10%; top: 110px;">
         	    <span style="font-size:30px;">
         			已上線AP數量: {{ ap }}
         			<br>
@@ -49,15 +49,15 @@
         	</div>
             </div>
 	    <!--graph-->
-            <div style="top: 10%;  padding:1px 16px; width: 100%; background-color: #ffffff; float: left; margin-top:2%;" id="main_chart">
-		<div class="wrapper" style="max-width: 100%; margin: 3%;">
-		    <h1>登入人數變化</h1>
-		    <canvas id="myChart" style="width: 800px; height: 450px;"></canvas>
+            <div style="display: inline-block; width:65%; height:100%; margin-left:5%; margin-top:2%;" id="main_chart">
+				<div class="wrapper" style="margin: 3%;">
+					<h1><font face="標楷體">登入人數變化(人數/小時)</font></h1>
+					<canvas id="myChart" width="760px" height="400px" style="width: 760px; height: 400px;"></canvas>
 		</div>
 	    </div>
 	    <script>
 		// Our labels along the x-axis
-		var time= [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ,15 ,16 ,17 ,18 ,19 ,20 ,21 ,22, 23, 24];
+		var time= [24, 23, 22, 21 ,20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 		// For drawing the lines
 		var count={{ graph_data }};
 		
