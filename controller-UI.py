@@ -105,9 +105,9 @@ def ap_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
     data={}
-    data['ap_names'] = get_ap_device()
-    data['ap_status']= get_ap_status()
-    data['nodes'] = get_node()
+    data['ap_names'] = db.get_ap_device()
+    data['ap_status']= db.get_ap_status()
+    data['nodes'] = db.get_node()
     return render_template('AP_page.html', **data)      # 一次送三個table過去
 
 
@@ -185,9 +185,9 @@ def imfor():
     id = int( content['ap_id'] )
     
     data={}
-    data['name']= get_ap_device(id)[id]     #回傳的竟然是 dict ==+
-    data['status']= get_ap_status(id)[id]
-    data['node']= get_node(id)[id]
+    data['name']= db.get_ap_device(id)[id]     #回傳的竟然是 dict ==+
+    data['status']= db.get_ap_status(id)[id]
+    data['node']= db.get_node(id)[id]
     data['id']= id
     return jsonify(data)
 #                                           AP_page 用到的
