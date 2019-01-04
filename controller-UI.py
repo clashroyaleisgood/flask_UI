@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, render_template, request, url_for, redirect, flash
 from flask_login import LoginManager, UserMixin, login_user, current_user, login_required, logout_user
 import get_DB as db
+import connect_socket as cs
 
 app = Flask(__name__)
 #-------------------------------------------------------------        login
@@ -104,9 +105,9 @@ def ap_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
     data={}
-    data['ap_names'] = db.get_ap_device()
-    data['ap_status']= db.get_ap_status()
-    data['nodes'] = db.get_node()
+    data['ap_names'] = get_ap_device()
+    data['ap_status']= get_ap_status()
+    data['nodes'] = get_node()
     return render_template('AP_page.html', **data)      # 一次送三個table過去
 
 
@@ -178,27 +179,15 @@ def get_graph():
     return [i*10 for i in range(1, 25)]
 # -----------------------------------------------------
 
-@app.route('/_imfor', methods=['POST'])
+@app.route('/_imfor/', methods=['POST'])
 def imfor():
     content = request.get_json()
     id = int( content['ap_id'] )
-    #data=[i for i in range(start, start +17)]
-    #data[2]=[21, 22, 23, 24]
-    '''
-    name= get_ap_name(id)
-    status= get_ap_status(id)
-    node= get_node(id)
-    data=[]
-    data+= [id]         #0
-    data+= [name[:] ]   #1  #1 2 3...?
-    data+= [id]         #2 device id
-    data+= status[:]    #3 4 5 6
-    data+= node[1:]     #7 ~ 15
-    '''
+    
     data={}
-    data['name']= db.get_ap_device(id)[id]     #回傳的竟然是 dict ==+
-    data['status']= db.get_ap_status(id)[id]
-    data['node']= db.get_node(id)[id]
+    data['name']= get_ap_device(id)[id]     #回傳的竟然是 dict ==+
+    data['status']= get_ap_status(id)[id]
+    data['node']= get_node(id)[id]
     data['id']= id
     return jsonify(data)
 #                                           AP_page 用到的
@@ -206,18 +195,28 @@ def imfor():
 def change_ssid():
     content = request.get_json()
     print(content)
+    #cs.act_21(content['ap_id'] , content['new_ssid'] )
     return jsonify("")
 
 @app.route('/_change_encryption/', methods=['POST'])
 def change_encry():
     content = request.get_json()
     print(content)
+    #cs.act_23(content['ap_id'], content['encry'] )
     return jsonify("")
 
 @app.route('/_change_key/', methods=['POST'])
 def change_key():
     content = request.get_json()
     print(content)
+    #cs.act_24(content['ap_id'], content['new_key'] )
+    return jsonify("")
+
+@app.route('/_get_log/', methods=['POST'])
+def get_log():
+    content= request.get_json()
+    print(content)
+    #cs.act_10(content['ap_id'])
     return jsonify("")
 '''
 @app.route('/_delete_ssid', methods=['POST'])

@@ -61,7 +61,7 @@
         }
     }
 
-    var ap_id;
+    var ap_id, gw_id;
     var detail_status= "idle";
     // apdetail
     $(document).ready(function () {
@@ -70,6 +70,7 @@
                 
                 //console.log(data);
                 ap_id = data.id;
+                gw_id = data.node[1];
                 $("#ID").attr("value", data.id);
                 $('#ssid').val(data.name[0]);
                 $("#encryption").val(data.name[1]);
@@ -163,7 +164,7 @@
                     alert("SSID can't be empty!");
                     ssid.val(original );
                 } else {
-                    data= {'ap_id': ap_id, 'new_ssid': ssid_value }
+                    data= {'ap_id': gw_id, 'new_ssid': ssid_value }
                     $(this).post_ajax("{{ url_for('change_ssid') }}", data, alert("Send") );
                     refresh_detail({'ap_id': ap_id} );
                     $("#apform").hide();
@@ -183,7 +184,7 @@
         $("#edit_encrypt").click(function(){
             if(detail_status == 'idle') {
                 var encry= $("#encryption");
-                alert(encry.find(":selected").text() );
+                //alert(encry.find(":selected").text() );
                 encry.attr("data-original", encry.find(":selected").text() )
                 encry.removeAttr("disabled");
                 detail_status =  'edit_encry';
@@ -199,7 +200,7 @@
                 if(original == encry.find(":selected").text()) {
                     alert("same");
                 } else {
-                    var data = {'ap_id': ap_id, 'encry': encry.find(":selected").text() };
+                    var data = {'ap_id': gw_id, 'encry': encry.find(":selected").text() };
                     $(this).post_ajax("{{ url_for('change_encry') }}", data, function(){});
                     refresh_detail({'ap_id': ap_id} );
                     $("#apform").hide();
@@ -219,7 +220,7 @@
                 })
                     .removeAttr("readonly")
                     .attr("data-original", key.val() );
-                alert(key.val() );
+                //alert(key.val() );
                 
                 detail_status= 'edit_key';
             }
@@ -236,7 +237,7 @@
                     alert("key can't be empty!");
                     key.val(original );
                 } else {
-                    data= {'ap_id': ap_id, 'new_key': key_value }
+                    data= {'ap_id': gw_id, 'new_key': key_value }
                     $(this).post_ajax("{{ url_for('change_key') }}", data, alert("Send") );
                     refresh_detail({'ap_id': ap_id} );
                     $("#apform").hide();
@@ -251,11 +252,6 @@
                 });
                 detail_status = 'idle';
             }
-        });
-        $("#123").click(function(){
-            refresh_detail({'ap_id': ap_id} );
-            $("#apform").hide();
-            $("#apform").fadeIn();
         });
     });
     // 進行修改
@@ -531,7 +527,6 @@
                     </div>
                 </div>
                 <input type="text" readonly class="form-control backhover" style="width: 5%; cursor: pointer; text-align: center;" id="back" value="back">
-                <input type="text" readonly class="form-control backhover" style="width: 5%; cursor: pointer; text-align: center;" id="123" value="refresh">
 
         </form>
     </div>

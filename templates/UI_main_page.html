@@ -72,7 +72,9 @@
             
             });
             $("#refresh").click(function(){
+                $("#con").fadeOut();
                 $('#con').load(ret_html(page_select ));
+                $("#con").fadeIn();
             });
         })
     </script>
