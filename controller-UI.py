@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, request, url_for, redirect, f
 from flask_login import LoginManager, UserMixin, login_user, current_user, login_required, logout_user
 import get_DB as db
 import connect_socket as cs
+import time
 
 app = Flask(__name__)
 #-------------------------------------------------------------        login
@@ -117,7 +118,7 @@ def user_page():
         return redirect( url_for( 'login'))
     if status != 'work':
         return "<h1>Not connect</h1>"
-    return render_template('User_page.html', users= db.get_users() )
+    return render_template('User_page.html', users= get_users() )
 
 
 @app.route('/about/', methods=['GET', 'POST'])
@@ -141,8 +142,7 @@ def get_node(ind = 0):
             nodes[str(i) ]=['nod'+str(j) for j in range(i+1, i+11)]
         return nodes
     else:
-        i= 1
-        return { ind: ['name+', 'gw_id+', '最後登陸時間+', 'wan_ip+', 'sys_uptime+', 'sys_memfree+', 'sys_load+', 'wifidog_uptime+', 'create_time+', 'update_time+']}
+        return { ind: ['name+', str(ind), '最後登陸時間+', 'wan_ip+', 'sys_uptime+', 'sys_memfree+', 'sys_load+', 'wifidog_uptime+', 'create_time+', 'update_time+']}
 
 def get_ap_status(ind = 0):
     apdb={}
@@ -158,11 +158,11 @@ def get_ap_device(ind = 0):
     apna={}
     if ind == 0:
         for i in range(1, AP_num+1):
-            apna[str(i) ]=['id2121', 'wpa+', '123+']
+            apna[str(i) ]=['id2121', 'none', '123+']
         return apna
     else:
         i= 1
-        ret_list = ['id2121', 'PSK2', '123+']
+        ret_list = ['id2121', 'psk2', '123+']
         return {ind: ret_list}
 
 def get_users(ind = 0):
@@ -212,12 +212,16 @@ def change_key():
     #cs.act_24(content['ap_id'], content['new_key'] )
     return jsonify("")
 
-@app.route('/_get_log/', methods=['POST'])
-def get_log():
-    content= request.get_json()
-    print(content)
-    #cs.act_10(content['ap_id'])
-    return jsonify("")
+@app.route('/_get_log/<ap_id>', methods=['GET'])
+def get_log(ap_id):
+    #content= request.get_json()
+    #print(content)
+    print("ap log:", ap_id)
+
+    #cs.act_10(ap_id)
+    time.sleep(3)   #sleep 3s
+    return 'ap_log: ' + str(ap_id)
+    #return db.get_ap_log(ap_id )
 '''
 @app.route('/_delete_ssid', methods=['POST'])
 def delete():
@@ -234,5 +238,5 @@ def add_ssid():
 if __name__ == "__main__":
     try_connect_db()
 
-    app.run(threaded=True, debug=True, port=5000)
-    #app.run(host= '10.140.0.4',debug=True, threaded=True, port=27016)
+    #app.run(threaded=True, debug=True, port=5000)
+    app.run(host= '10.140.0.4',debug=True, threaded=True, port=3389)

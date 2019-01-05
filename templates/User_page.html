@@ -26,7 +26,7 @@
     </style>
 	
     <script>
-        $(document).ready(function () {
+        $(document).ready(function () {/*
 			$("td#user_choose").click(function() {	//一定要用 function() {... this 才正確
 				var index= $(this).attr("data-index");
 				var name= $(this).attr("data-name");
@@ -34,7 +34,7 @@
 				alert('index: '+index+'\n'+'name: '+name);
 				var data_j = {'index': index, 'name': name};
 				$("div#user_list").load_ajax( link_to_imformation, data_j); //可以接收到 UI_main_page 的變數
-            });
+            });*/
             $('.js-pscroll').each(function(){
                 var ps = new PerfectScrollbar(this);
                 $(window).on('resize', function(){
@@ -52,16 +52,13 @@
             table = document.getElementById("Table");
             tr = table.getElementsByTagName("tr");
             //Loop throught all table rows, and hide those who don't match the search query
-            for (i=0; i<tr.length; i++)
-            {
+            for (i=0; i<tr.length; i++) {
                 td = tr[i].getElementsByTagName("td")[0];
                 if (td) {
                     txtValue = td.textContent || td.innerText;
-                    if(txtValue.toUpperCase().indexOf(filter) > -1)
-                    {
+                    if(txtValue.toUpperCase().indexOf(filter) > -1) {
                         tr[i].style.display = "";
-                    } 
-                    else {
+                    } else {
                         tr[i].style.display = "none";
                     }
                 }

@@ -72,6 +72,7 @@
                 ap_id = data.id;
                 gw_id = data.node[1];
                 $("#ID").attr("value", data.id);
+                $("#log_href").attr("href", "{{ url_for('get_log', ap_id='') }}"+data.node[1])
                 $('#ssid').val(data.name[0]);
                 $("#encryption").val(data.name[1]);
                 $("#key").val(data.name[2]);
@@ -149,7 +150,24 @@
                     .attr("data-original", ssid.val() );
                 //alert(ssid.val() );
                 
+                $(this).val("取消");
+                $("#confirm_ssid").fadeIn();
                 detail_status= 'edit_ssid';
+            } else if(detail_status == 'edit_ssid') {
+                var ssid= $("#ssid");
+                ssid.val(ssid.attr("data-original") );
+                ssid.removeAttr("data-original");
+                ssid.css({
+                    "background": "",
+                    "color": ""
+                })
+                    .attr({
+                        "readonly": "true",
+                });
+
+                $(this).val("修改");
+                $("#confirm_ssid").hide();
+                detail_status = 'idle';
             }
         });
         $("#confirm_ssid").click(function(){
@@ -164,11 +182,15 @@
                     alert("SSID can't be empty!");
                     ssid.val(original );
                 } else {
-                    data= {'ap_id': gw_id, 'new_ssid': ssid_value }
-                    $(this).post_ajax("{{ url_for('change_ssid') }}", data, alert("Send") );
-                    refresh_detail({'ap_id': ap_id} );
-                    $("#apform").hide();
-                    $("#apform").fadeIn();
+                    if(confirm("really?")) {
+                        data= {'ap_id': gw_id, 'new_ssid': ssid_value }
+                        $(this).post_ajax("{{ url_for('change_ssid') }}", data, alert("Send") );
+                        refresh_detail({'ap_id': ap_id} );
+                        $("#apform").hide();
+                        $("#apform").fadeIn();
+                    } else {
+                        ssid.val(original);
+                    }
                 }
                 ssid.css({
                     "background": "",
@@ -177,6 +199,9 @@
                     .attr({
                         "readonly": "true",
                 });
+
+                $(this).prev().val("修改");
+                $("#confirm_ssid").hide();
                 detail_status = 'idle';
             }
         });
@@ -184,10 +209,22 @@
         $("#edit_encrypt").click(function(){
             if(detail_status == 'idle') {
                 var encry= $("#encryption");
-                //alert(encry.find(":selected").text() );
-                encry.attr("data-original", encry.find(":selected").text() )
+                //alert(encry.find(":selected").text() +" 123 "+encry.val());
+                encry.attr("data-original", encry.val() )
                 encry.removeAttr("disabled");
+
+                $(this).val("取消");
+                $("#confirm_encrypt").fadeIn();
                 detail_status =  'edit_encry';
+            } else if(detail_status == 'edit_encry') {
+                var encry= $("#encryption");
+                encry.attr("disabled", "");
+                encry.val(encry.attr("data-original"));
+                encry.removeAttr("data-original")
+
+                $(this).val("修改");
+                $("#confirm_encrypt").hide();
+                detail_status = 'idle';
             }
         });
         $("#confirm_encrypt").click(function(){
@@ -197,22 +234,28 @@
                 encry.removeAttr("data-original");
 
                 encry.attr("disabled", "");
-                if(original == encry.find(":selected").text()) {
-                    alert("same");
+                if(original == encry.val() ) {
+                    alert("Same type");
                 } else {
-                    var data = {'ap_id': gw_id, 'encry': encry.find(":selected").text() };
-                    $(this).post_ajax("{{ url_for('change_encry') }}", data, function(){});
-                    refresh_detail({'ap_id': ap_id} );
-                    $("#apform").hide();
-                    $("#apform").fadeIn();
+                    if(confirm("really?")) {
+                        var data = {'ap_id': gw_id, 'encry': encry.val() };
+                        $(this).post_ajax("{{ url_for('change_encry') }}", data, alert("Send"));
+                        refresh_detail({'ap_id': ap_id} );
+                        $("#apform").hide();
+                        $("#apform").fadeIn();
+                    } else {
+                        encry.val(original);
+                    }
                 }
 
+                $(this).prev().val("修改"); //把左側按鈕改回來 (  $(#edit_encrypt).val...  )
+                $("#confirm_encrypt").hide();
                 detail_status = 'idle';
             }
         });
 
         $("#edit_key").click(function(){
-            if(detail_status == 'idle') {
+            if(detail_status == 'idle') {               //修改
                 var key= $("#key");
                 key.css({
                     "background": "#FFDD55",
@@ -220,9 +263,25 @@
                 })
                     .removeAttr("readonly")
                     .attr("data-original", key.val() );
-                //alert(key.val() );
                 
+                $(this).val("取消");
+                $("#confirm_key").fadeIn();
                 detail_status= 'edit_key';
+            } else if(detail_status == 'edit_key') {    //取消
+                var key= $("#key");
+                key.val(key.attr("data-original") );
+                key.removeAttr("data-original");
+                key.css({
+                    "background": "",
+                    "color": ""
+                })
+                    .attr({
+                        "readonly": "true"
+                });
+
+                $(this).val("修改");
+                $("#confirm_key").hide();
+                detail_status = 'idle';
             }
         });
         $("#confirm_key").click(function(){
@@ -237,11 +296,15 @@
                     alert("key can't be empty!");
                     key.val(original );
                 } else {
-                    data= {'ap_id': gw_id, 'new_key': key_value }
-                    $(this).post_ajax("{{ url_for('change_key') }}", data, alert("Send") );
-                    refresh_detail({'ap_id': ap_id} );
-                    $("#apform").hide();
-                    $("#apform").fadeIn();
+                    if(confirm("really?")) {
+                        data= {'ap_id': gw_id, 'new_key': key_value }
+                        $(this).post_ajax("{{ url_for('change_key') }}", data, alert("Send") );
+                        refresh_detail({'ap_id': ap_id} );
+                        $("#apform").hide();
+                        $("#apform").fadeIn();
+                    } else {
+                        key.val(original );
+                    }
                 }
                 key.css({
                     "background": "",
@@ -250,6 +313,9 @@
                     .attr({
                         "readonly": "true"
                 });
+
+                $("#confirm_key").hide();
+                $(this).prev().val("修改"); //把左側按鈕改回來 (  $(#edit_key).val...  )
                 detail_status = 'idle';
             }
         });
@@ -379,7 +445,12 @@
         </div>
     </div>
     <div id="apform" class="limiter" style="display: none;">
-        <h1>Information</h1>
+        <div class="form-group row">
+            <h1>Information</h1>
+            <a href="" target="_blank" id = "log_href" style="margin-left: 5%;">
+                <input type="button" class="btn btn-primary mb-2" value="Log">
+            </a>
+        </div>
         <form>
                 <div class="form-group row">
                     <label for="ID" class="col-sm-2 col-form-label">ID</label>
@@ -421,18 +492,18 @@
                         <input type="text" readonly class="form-control" id="ssid" placeholder="SSID">
                     </div>
                     <input type="button" id="edit_ssid" class="btn btn-primary mb-2" value="修改" style="margin-right: 10px;">
-                    <input type="button" id="confirm_ssid" class="btn btn-primary mb-2" value="確認">
+                    <input type="button" id="confirm_ssid" class="btn btn-primary mb-2" value="確認" style="display: none;">
 		        </div>
 		        <div class="form-group row">
 		            <label for="encryption" class="col-sm-2 col-form-label">Encryption</label>
 		            <div class="col-sm-4">
    		                <select class="form-control" id='encryption' disabled>
-			                <option value='None'>None</option>
-                            <option value="PSK2">PSK2</option>
+			                <option value='none'>None</option>
+                            <option value="psk2">PSK2</option>
 			            </select>
                     </div>
                     <input type="button" id="edit_encrypt" class="btn btn-primary mb-2" value="修改" style="margin-right: 10px;">
-                    <input type="button" id="confirm_encrypt" class="btn btn-primary mb-2" value="確認">
+                    <input type="button" id="confirm_encrypt" class="btn btn-primary mb-2" value="確認" style="display: none;">
 		        </div>
                 <div class="form-group row" id="key_parent">
                     <label for="key" class="col-sm-2 col-form-label">Key</label>
@@ -440,12 +511,12 @@
                         <input type="text" readonly class="form-control" id="key" placeholder="key">
                     </div>
                     <input type="button" id="edit_key" class="btn btn-primary mb-2" value="修改" style="margin-right: 10px;">
-                    <input type="button" id="confirm_key" class="btn btn-primary mb-2" value="確認">
+                    <input type="button" id="confirm_key" class="btn btn-primary mb-2" value="確認" style="display: none;">
                 </div>
                 <div class="form-group row">
                     <label for="device_id" class="col-sm-2 col-form-label">Device ID</label>
                     <div class="col-sm-4">
-                        <input type="number" readonly class="form-control" id="device_id" placeholder="device ID">
+                        <input type="text" readonly class="form-control" id="device_id" placeholder="device ID">
                     </div>
                 </div>
                 <div class="form-group row">
