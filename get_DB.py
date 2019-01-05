@@ -71,7 +71,7 @@ def get_ap_device(index = 0):
     apna={}
     change_table(2,id = index)
     for x in mycursor:
-        apna[x[0]]=[x[1],x[2],x[3]]
+        apna[x[0]]=[x[1],x[2].lower(),x[3]]
         #0: ap_id, 1: SSID, 2: encrytion ,3:key
             #  int    str      str          str
     return apna
