@@ -3,6 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, current_user, login
 import get_DB as db
 import connect_socket as cs
 import time
+import hashlib
 
 app = Flask(__name__)
 #-------------------------------------------------------------        login
@@ -11,7 +12,8 @@ app.secret_key = 'Your Key'
 login_manager = LoginManager(app)
 #  login\_manager.init\_app(app)也可以
 
-UI_users = {'123': {'password': '123'}}         #目前唯一的帳號 (多組帳號意義不大)
+#目前唯一的帳號 (多組帳號意義不大)
+UI_users = {'123': {'password': 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'}}
 
 class User(UserMixin):
     pass
@@ -40,15 +42,17 @@ def login():
         flash('account!')
         return redirect( url_for('login'))
 
-    elif request.form['password'] == UI_users[account]['password']: #correct
-        #  實作User類別
-        user = User()
-        #  設置id就是email
-        user.id = account
-        #  這邊，透過login_user來記錄user_id，如下了解程式碼的login_user說明。
-        login_user(user)
-        #  登入成功，轉址
-        return redirect(url_for('main'))
+    else:
+        abc = hashlib.new('sha256', request.form['password'].encode("utf-8")) #使用者輸入hash過後
+        if abc.hexdigest() == UI_users[account]['password']:
+            #  實作User類別
+            user = User()
+            #  設置id就是email
+            user.id = account
+            #  這邊，透過login_user來記錄user_id，如下了解程式碼的login_user說明。
+            login_user(user)
+            #  登入成功，轉址
+            return redirect(url_for('main'))
                                                                     #wrong password
     flash('wrong')
     flash('password!')
@@ -82,7 +86,7 @@ def main():
     if not current_user.is_active:              #這兩行用來檢測使用者登入狀況
         return redirect( url_for( 'login'))
     if status == 'fail':
-        print('status original fail')
+        print('database connect fail')
         try_connect_db()
     return render_template('UI_main_page.html')
 
@@ -118,7 +122,7 @@ def user_page():
         return redirect( url_for( 'login'))
     if status != 'work':
         return "<h1>Not connect</h1>"
-    return render_template('User_page.html', users= get_users() )
+    return render_template('User_page.html', users= db.get_users() )
 
 
 @app.route('/about/', methods=['GET', 'POST'])
@@ -238,5 +242,5 @@ def add_ssid():
 if __name__ == "__main__":
     try_connect_db()
 
-    #app.run(threaded=True, debug=True, port=5000)
-    app.run(host= '10.140.0.4',debug=True, threaded=True, port=3389)
+    app.run(threaded=True, debug=True, port=5000)
+    #app.run(host= '10.140.0.4',debug=True, threaded=True, port=27016)
