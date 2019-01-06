@@ -263,7 +263,7 @@
                 } else if(key_value == "") {
                     alert("key can't be empty!");
                     key.val(original );
-                } else if( key_value.length <= 17 || ssid_value.length >= 8) {
+                } else if( key_value.length > 17 || key_value.length < 8) {
                     alert("lendth between 8 to 17");
                     //alert(ssid_value.length);
                     key.val(original );
