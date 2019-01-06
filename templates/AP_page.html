@@ -131,7 +131,7 @@
                 });
 
                 $(this).val("修改");
-                $("#confirm_ssid").hide();
+                $("#confirm_ssid").fadeOut();
                 detail_status = 'idle';
             }
         });
@@ -166,7 +166,7 @@
                 });
 
                 $(this).prev().val("修改");
-                $("#confirm_ssid").hide();
+                $(this).fadeOut();
                 detail_status = 'idle';
             }
         });
@@ -188,7 +188,7 @@
                 encry.removeAttr("data-original")
 
                 $(this).val("修改");
-                $("#confirm_encrypt").hide();
+                $("#confirm_encrypt").fadeOut();
                 detail_status = 'idle';
             }
         });
@@ -214,7 +214,7 @@
                 }
 
                 $(this).prev().val("修改"); //把左側按鈕改回來 (  $(#edit_encrypt).val...  )
-                $("#confirm_encrypt").hide();
+                $(this).fadeOut();
                 detail_status = 'idle';
             }
         });
@@ -245,7 +245,7 @@
                 });
 
                 $(this).val("修改");
-                $("#confirm_key").hide();
+                $("#confirm_key").fadeOut();
                 detail_status = 'idle';
             }
         });
@@ -279,7 +279,7 @@
                         "readonly": "true"
                 });
 
-                $("#confirm_key").hide();
+                $(this).fadeOut();
                 $(this).prev().val("修改"); //把左側按鈕改回來 (  $(#edit_key).val...  )
                 detail_status = 'idle';
             }
