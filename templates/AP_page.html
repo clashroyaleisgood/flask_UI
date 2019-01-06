@@ -146,9 +146,8 @@
                 } else if(ssid_value == "") {
                     alert("SSID can't be empty!");
                     ssid.val(original );
-                } else if( ssid_value.length <= 17 || ssid_value.length >= 8) {
-                    alert("lendth between 8 to 17");
-                    //alert(ssid_value.length);
+                } else if(ssid_value.length > 32) {
+                    alert("lendth < 33");   //32可接受
                     ssid.val(original );
                 } else {
                     if(confirm("really?")) {
@@ -264,8 +263,9 @@
                 } else if(key_value == "") {
                     alert("key can't be empty!");
                     key.val(original );
-                } else if(key_value.length > 32) {
-                    alert("lendth < 33");   //32可接受
+                } else if( key_value.length <= 17 || ssid_value.length >= 8) {
+                    alert("lendth between 8 to 17");
+                    //alert(ssid_value.length);
                     key.val(original );
                 } else {
                     if(confirm("really?")) {
