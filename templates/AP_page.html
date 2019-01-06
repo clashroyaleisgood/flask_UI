@@ -26,15 +26,6 @@
         .limiter {
             width: 100%;
         }
-        /* 我不確定到時候會不會用到
-        .ssid_edit {
-            background: #FFDD55;
-            color: red;
-        }
-        .ssid_ori {
-            background: #DDDDDD;
-            color: #495057;
-        }*/
 	</style>
 
 
@@ -71,8 +62,9 @@
                 //console.log(data);
                 ap_id = data.id;
                 gw_id = data.node[1];
+                $("#ap_name_in_detail_page").text(data.node[0]);
                 $("#ID").attr("value", data.id);
-                $("#log_href").attr("href", "{{ url_for('get_log', ap_id='') }}"+data.node[1])
+                $("#log_href").attr("href", "{{ url_for('get_log', ap_id='') }}"+data.node[1]);
                 $('#ssid').val(data.name[0]);
                 $("#encryption").val(data.name[1]);
                 $("#key").val(data.name[2]);
@@ -112,33 +104,6 @@
                 alert("something not finished?");
             }
         });
-        //{#
-        $("input#add_ssid").click(function() {
-            if(detail_status == "idle") {
-                detail_status = "add_ssid";
-                $(this).next().show();
-                $("input#inputNewSSID").val("");
-                $(this).val("取消");
-            } else if(detail_status == "add_ssid") {
-                detail_status = "idle";
-                $(this).val("新增 SSID");
-                $(this).next().hide();
-            }
-        });
-        $("input#confirm_add").click(function() {
-            if($(this).prev().children().val() == "" ) {   //新增空字串 AP
-                alert("AP name 不能為空");
-            } else if(confirm('really !?') == true) {
-                data = {'ap_id': id, 'ssid': $(this).prev().children().val() };
-                $(this).post_ajax("{{ url_for('add_ssid') }}", data, function(){} );
-                alert("已送出 請稍等");
-                detail_status = "idle";
-                $("input#add_ssid").val("新增 SSID");
-                $("input#add_ssid").next().hide();
-
-            }
-        });
-        //#}
         $("#edit_ssid").click(function(){
             if(detail_status == 'idle') {
                 var ssid= $("#ssid");
@@ -320,72 +285,6 @@
             }
         });
     });
-    // 進行修改
-    //{#
-    var ssid_from="";
-    function processEdit(z) {
-        if(detail_status == "idle"){
-        detail_status = "edit_ssid";
-        var ssid=$("#"+z);
-        if( ssid.attr("data-type") == "read" ){
-            ssid_from = ssid.val() ;            //input 的 value 要用 .val() 不能用 .attr("value")
-            //alert('type: '+ ssid.attr("data-type"));
-            ssid.css({
-                "background": "#FFDD55",
-                "color": "red"
-            })
-                .removeAttr("readonly")
-                .attr({
-                    "data-type": "edit",
-                    "data-from": ssid.attr("value")
-            });
-            //alert('type: '+ ssid.attr("data-type"));
-            //alert("change"+ ssid_from);
-            //alert("id= "+ id);
-        }}
-    }
-
-    // 確認修改並取得ssid改變的值
-    function processFormData(z) {
-        if(detail_status == "edit_ssid") {
-        var ssid=$("#"+z);
-        if( ssid.attr("data-type") == "edit" ){
-            detail_status = "idle";
-            //alert('type: '+ ssid.attr("data-type"));
-            ssid.css({
-                "background": "#DDDDDD",
-                "color": "#495057"
-            })
-                .attr({
-                    "readonly": "true",
-                    "data-type": "read"
-            });
-            //alert('type: '+ ssid.attr("data-type"));
-            //alert('value: '+ ssid.val());
-            
-            var ssid_to= ssid.val();
-            var ssid_no= ssid.attr("data-ssid_no");
-            if( ssid_from == ssid_to ){
-                alert("same ssid");
-            }
-            else {
-                var data={'ap_id': id, 'ssid_no': ssid_no, 'from': ssid_from, 'to': ssid_to };
-                ssid.post_ajax("{{ url_for('change_ssid') }}", data, function(){} );
-                alert("send");
-            }
-        }}
-    }
-    function processDelete(z) {
-        if(detail_status == "idle"){
-            var ssid=$("#"+z);
-            if(confirm("really !?")) {
-                var ssid_no= ssid.attr("data-ssid_no");
-                var data= {'ap_id': id, 'ssid_no': ssid_no, 'ssid': ssid.val() };
-                ssid.post_ajax("{{ url_for('delete') }}", data, function(){} );
-            }
-        }
-    }
-    //#}
 </script>
 </head>
 
@@ -400,7 +299,7 @@
     <div id="aptable">
         <div class="limiter">
             <h1><b>AP</b></h1>
-            <input type="text" id="apInput" onkeyup="apFunction()" placeholder="Search for ID .." style="margin-left: 2%; margin-top: 3%; outline-style: solid; outline-width: 2px; padding: 4px;">
+            <input type="text" id="apInput" onkeyup="apFunction()" placeholder="Search for Name .." style="margin-left: 2%; margin-top: 3%; outline-style: solid; outline-width: 2px; padding: 4px;">
             <div class="container-table100" style="justify-content: flex-start; min-height: 20vh;">
                 <div class="wrap-table100">
                     <div class="table100 ver3 m-b-110">
@@ -446,9 +345,10 @@
     </div>
     <div id="apform" class="limiter" style="display: none;">
         <div class="form-group row">
+            <h1 id = "ap_name_in_detail_page" style="margin-right:2%;">123123</h1>
             <h1>Information</h1>
             <a href="" target="_blank" id = "log_href" style="margin-left: 5%;">
-                <input type="button" class="btn btn-primary mb-2" value="Log">
+                <input type="button" class="btn btn-primary mb-2" value="Get AP Log">
             </a>
         </div>
         <form>
@@ -458,34 +358,7 @@
                         <input type="text" readonly class="form-control" id="ID" placeholder="ID">
                     </div>
                 </div>
-                <!--<div class="form-group row">
-                    <label for="MAC" class="col-sm-2 col-form-label">MAC</label>
-                    <div class="col-sm-4">
-                        <input type="number" readonly class="form-control" id="MAC" placeholder="MAC">
-                    </div>
-                </div>
-                <div id="SSIDS">
-                    <div class="form-group row">
-                        <label for="inputSSID" class="col-sm-2 col-form-label">SSID</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" style="background-color: #DDDDDD;" id="inputSSID1" placeholder="SSID" value="0000" readonly>
-                        </div>
-                        <input type="button" id="edit" class="btn btn-primary mb-2" value="修改" onclick='processEdit("inputSSID1");'>
-                        <input type="button" id="confirm" class="btn btn-primary mb-2" value="確認" onclick='processFormData("inputSSID1");'>
-                    </div>
-                </div>
-                <div>
-                    <input type="button" id="add_ssid" class="btn btn-primary mb-2" value="新增 SSID">
-                    
-                    <div class="form-group row" id="newSSID" style= "display: none;">
-                        <label for="inputSSID" class="col-sm-2 col-form-label">SSID new</label>
-                        <div class="col-sm-4">
-                        <input type="text" class="form-control" style="background-color: #FFDD55; color: red;" id="inputNewSSID" placeholder="SSID">
-                        </div>
-                        <input type="button" id="confirm_add" class="btn btn-primary mb-2" value="確認">
-                    </div>
-                </div>-->
-                
+
 		        <div class="form-group row">
                     <label for="ssid" class="col-sm-2 col-form-label">SSID</label>
                     <div class="col-sm-4">

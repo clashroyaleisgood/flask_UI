@@ -185,6 +185,8 @@ def get_graph():
 
 @app.route('/_imfor/', methods=['POST'])
 def imfor():
+    if not current_user.is_active:
+        return jsonify("")
     content = request.get_json()
     id = int( content['ap_id'] )
     
@@ -197,6 +199,8 @@ def imfor():
 #                                           AP_page 用到的
 @app.route('/_change_ssid/', methods=['POST'])
 def change_ssid():
+    if not current_user.is_active:
+        return jsonify("")
     content = request.get_json()
     print(content)
     #cs.act_21(content['ap_id'] , content['new_ssid'] )
@@ -204,6 +208,8 @@ def change_ssid():
 
 @app.route('/_change_encryption/', methods=['POST'])
 def change_encry():
+    if not current_user.is_active:
+        return jsonify("")
     content = request.get_json()
     print(content)
     #cs.act_23(content['ap_id'], content['encry'] )
@@ -211,6 +217,8 @@ def change_encry():
 
 @app.route('/_change_key/', methods=['POST'])
 def change_key():
+    if not current_user.is_active:
+        return jsonify("")
     content = request.get_json()
     print(content)
     #cs.act_24(content['ap_id'], content['new_key'] )
@@ -218,29 +226,19 @@ def change_key():
 
 @app.route('/_get_log/<ap_id>', methods=['GET'])
 def get_log(ap_id):
+    if not current_user.is_active:
+        return jsonify("")
     #content= request.get_json()
     #print(content)
-    print("ap log:", ap_id)
+    print("get ap log:", ap_id)
 
     #cs.act_10(ap_id)
     time.sleep(3)   #sleep 3s
     return 'ap_log: ' + str(ap_id)
     #return db.get_ap_log(ap_id )
-'''
-@app.route('/_delete_ssid', methods=['POST'])
-def delete():
-    content = request.get_json()
-    print(content)
-    return jsonify("")
 
-@app.route('/_add_ssid', methods=['POST'])
-def add_ssid():
-    content = request.get_json()
-    print(content)
-    return jsonify("")
-'''
 if __name__ == "__main__":
     try_connect_db()
 
-    app.run(threaded=True, debug=True, port=5000)
-    #app.run(host= '10.140.0.4',debug=True, threaded=True, port=27016)
+    #app.run(threaded=True, debug=True, port=5000)
+    app.run(host= '10.140.0.4',debug=True, threaded=True, port=3389)
