@@ -146,6 +146,10 @@
                 } else if(ssid_value == "") {
                     alert("SSID can't be empty!");
                     ssid.val(original );
+                } else if( ssid_value.length <= 17 || ssid_value.length >= 8) {
+                    alert("lendth between 8 to 17");
+                    //alert(ssid_value.length);
+                    ssid.val(original );
                 } else {
                     if(confirm("really?")) {
                         data= {'ap_id': gw_id, 'new_ssid': ssid_value }
@@ -260,6 +264,9 @@
                 } else if(key_value == "") {
                     alert("key can't be empty!");
                     key.val(original );
+                } else if(key_value.length > 32) {
+                    alert("lendth < 33");   //32可接受
+                    key.val(original );
                 } else {
                     if(confirm("really?")) {
                         data= {'ap_id': gw_id, 'new_key': key_value }
@@ -362,7 +369,7 @@
 		        <div class="form-group row">
                     <label for="ssid" class="col-sm-2 col-form-label">SSID</label>
                     <div class="col-sm-4">
-                        <input type="text" readonly class="form-control" id="ssid" placeholder="SSID">
+                        <input type="text" readonly class="form-control" id="ssid" onkeyup="value=this.value.replace(/[\W]/g,'')" onpaste="return false" oncontextmenu="return false" placeholder="SSID">
                     </div>
                     <input type="button" id="edit_ssid" class="btn btn-primary mb-2" value="修改" style="margin-right: 10px;">
                     <input type="button" id="confirm_ssid" class="btn btn-primary mb-2" value="確認" style="display: none;">
@@ -381,7 +388,7 @@
                 <div class="form-group row" id="key_parent">
                     <label for="key" class="col-sm-2 col-form-label">Key</label>
                     <div class="col-sm-4">
-                        <input type="text" readonly class="form-control" id="key" placeholder="key">
+                        <input type="text" readonly class="form-control" id="key" onkeyup="value=this.value.replace(/[\W]/g,'')" onpaste="return false" oncontextmenu="return false" placeholder="key">
                     </div>
                     <input type="button" id="edit_key" class="btn btn-primary mb-2" value="修改" style="margin-right: 10px;">
                     <input type="button" id="confirm_key" class="btn btn-primary mb-2" value="確認" style="display: none;">
