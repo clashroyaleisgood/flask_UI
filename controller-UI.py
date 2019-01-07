@@ -103,7 +103,7 @@ def main_page():
         user= str(len(db.get_online() )) +'/'+ str(len(db.get_users() ))
         graph_data= db.get_avetime()
     else:
-        ap, user, graph_data =['not connect']*3
+        ap, user, graph_data =['<br>Not Connected<br>']*3
     return render_template('main_page.html', graph_data= graph_data , status= status, ap= ap, user= user)
 
 
@@ -126,7 +126,7 @@ def user_page():
         return redirect( url_for( 'login'))
     try_connect_db()
     if status != 'work':
-        return "<h1>Not connect</h1>"
+        return "<h1>Not Connected</h1>"
     return render_template('User_page.html', users= db.get_users() )
 
 
