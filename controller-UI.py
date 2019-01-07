@@ -136,9 +136,9 @@ def about_page():
         return redirect( url_for( 'login'))
     return '''
     <h1>程式源碼</h1>
-    <a><h3>https://github.com/refill12338/group1---ap</h3></a>
-    <a><h3>https://github.com/refill12338/controller</h3></a>
-    <a><h3>https://github.com/clashroyaleisgool/flask_UI</h3></a>
+    <h3><a>https://github.com/refill12338/group1---ap</a></h3>
+    <h3><a>https://github.com/refill12338/controller</a></h3>
+    <h3><a>https://github.com/clashroyaleisgool/flask_UI</a></h3>
     '''
 
 #------------------------------------------------------     data
