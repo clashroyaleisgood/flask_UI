@@ -332,7 +332,11 @@
 								{# 從這裡開始 #}        {# get_ap_name table #}
 								{%- for ap_id in ap_names -%}
 								{% set ap = ap_names[ap_id] %}
-								<tr class="row100 body" data-id=" {{ ap_id }} ">
+                                <tr class="row100 body" data-id=" {{ ap_id }} "
+                                {%- if ap_id in online -%}
+                                style="color: white"
+                                {% endif %}
+                                >
 									<td class="cell100 column1">{{ nodes[ ap_id ][0] }}</td>{# from node table #}
 									<td class="cell100 column2">{{ ap_id }}</td>
 									{# <!--<td class="cell100 column3">{{ ap[0] }}</td>--> -#}
