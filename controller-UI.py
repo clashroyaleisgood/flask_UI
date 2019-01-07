@@ -88,6 +88,7 @@ def main():
     if status == 'fail':
         print('database connect fail')
         try_connect_db()
+    try_connect_db()
     return render_template('UI_main_page.html')
 
 
@@ -96,6 +97,7 @@ status= 'fail'      #"work" or "fail"
 def main_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
+    try_connect_db()
     if status == 'work':
         ap= str(len(db.get_servdev() )) +'/'+ str(len(db.get_ap_device() ))
         user= str(len(db.get_online() )) +'/'+ str(len(db.get_users() ))
@@ -109,11 +111,12 @@ def main_page():
 def ap_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
+    try_connect_db()
     data={}
     data['ap_names'] = db.get_ap_device()
     data['ap_status']= db.get_ap_status()
     data['nodes'] = db.get_node()
-    data['online'] = db.get_servdev()
+    #data['online'] = [str(e) for e in range(5)]
     return render_template('AP_page.html', **data)      # 一次送三個table過去
 
 
@@ -121,6 +124,7 @@ def ap_page():
 def user_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
+    try_connect_db()
     if status != 'work':
         return "<h1>Not connect</h1>"
     return render_template('User_page.html', users= db.get_users() )
@@ -188,6 +192,7 @@ def get_graph():
 def imfor():
     if not current_user.is_active:
         return jsonify("")
+    try_connect_db()
     content = request.get_json()
     id = int( content['ap_id'] )
     
@@ -202,6 +207,7 @@ def imfor():
 def change_ssid():
     if not current_user.is_active:
         return jsonify("")
+    try_connect_db()
     content = request.get_json()
     print(content)
     #cs.act_21(content['ap_id'] , content['new_ssid'] )
@@ -211,6 +217,7 @@ def change_ssid():
 def change_encry():
     if not current_user.is_active:
         return jsonify("")
+    try_connect_db()
     content = request.get_json()
     print(content)
     #cs.act_23(content['ap_id'], content['encry'] )
@@ -220,6 +227,7 @@ def change_encry():
 def change_key():
     if not current_user.is_active:
         return jsonify("")
+    try_connect_db()
     content = request.get_json()
     print(content)
     #cs.act_24(content['ap_id'], content['new_key'] )
@@ -229,6 +237,7 @@ def change_key():
 def get_log(ap_id):
     if not current_user.is_active:
         return jsonify("")
+    try_connect_db()
     #content= request.get_json()
     #print(content)
     print("get ap log:", ap_id)
@@ -241,5 +250,5 @@ def get_log(ap_id):
 if __name__ == "__main__":
     try_connect_db()
 
-    #app.run(threaded=True, debug=True, port=5000)
-    app.run(host= '10.140.0.4',debug=True, threaded=True, port=3389)
+    app.run(threaded=True, debug=True, port=5000)
+    #app.run(host= '10.140.0.4',debug=True, threaded=True, port=3389)
