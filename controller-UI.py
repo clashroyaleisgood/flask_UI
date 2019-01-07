@@ -135,9 +135,10 @@ def about_page():
     if not current_user.is_active:
         return redirect( url_for( 'login'))
     return '''
-	<div style="width: 100%;">
-    none
-    <div>
+    <h1>程式源碼</h1>
+    <a><h3>https://github.com/refill12338/group1---ap</h3></a>
+    <a><h3>https://github.com/refill12338/controller</h3></a>
+    <a><h3>https://github.com/clashroyaleisgool/flask_UI</h3></a>
     '''
 
 #------------------------------------------------------     data
