@@ -113,7 +113,7 @@ def get_online(time = 3600):
     #拿出來的為連線者ip與連線起始時間 || ip | created_at ||
     #用len(get_online())即為連線使用者數量
 
-def get_servdev(time = 3600):
+def get_servdev(time = 180):
     dict = {}
     change_table(3,vectors = 'id,timestamp')
     for e in mycursor:
