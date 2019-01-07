@@ -116,7 +116,7 @@ def ap_page():
     data['ap_names'] = db.get_ap_device()
     data['ap_status']= db.get_ap_status()
     data['nodes'] = db.get_node()
-    #data['online'] = [str(e) for e in range(5)]
+    data['online'] = db.get_servdev()
     return render_template('AP_page.html', **data)      # 一次送三個table過去
 
 
