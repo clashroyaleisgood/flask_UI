@@ -164,7 +164,7 @@
                 } else {
                     if(confirm("really?")) {
                         data= {'ap_id': gw_id, 'new_ssid': ssid_value }
-                        $(this).post_ajax("{{ url_for('change_ssid') }}", data, alert("Send") );
+                        $(this).post_ajax("{{ url_for('change_ssid') }}", data, alert("Sent") );
                         refresh_detail({'ap_id': ap_id} );
                         $("#apform").hide();
                         $("#apform").fadeIn();
@@ -219,7 +219,7 @@
                 } else {
                     if(confirm("really?")) {
                         var data = {'ap_id': gw_id, 'encry': encry.val() };
-                        $(this).post_ajax("{{ url_for('change_encry') }}", data, alert("Send"));
+                        $(this).post_ajax("{{ url_for('change_encry') }}", data, alert("Sent"));
                         refresh_detail({'ap_id': ap_id} );
                         $("#apform").hide();
                         $("#apform").fadeIn();
@@ -282,7 +282,7 @@
                 } else {
                     if(confirm("really?")) {
                         data= {'ap_id': gw_id, 'new_key': key_value }
-                        $(this).post_ajax("{{ url_for('change_key') }}", data, alert("Send") );
+                        $(this).post_ajax("{{ url_for('change_key') }}", data, alert("Sent") );
                         refresh_detail({'ap_id': ap_id} );
                         $("#apform").hide();
                         $("#apform").fadeIn();
