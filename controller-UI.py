@@ -210,7 +210,7 @@ def change_ssid():
     try_connect_db()
     content = request.get_json()
     print(content)
-    #cs.act_21(content['ap_id'] , content['new_ssid'] )
+    cs.act_21(content['ap_id'] , content['new_ssid'] )
     return jsonify("")
 
 @app.route('/_change_encryption/', methods=['POST'])
@@ -220,7 +220,7 @@ def change_encry():
     try_connect_db()
     content = request.get_json()
     print(content)
-    #cs.act_23(content['ap_id'], content['encry'] )
+    cs.act_23(content['ap_id'], content['encry'] )
     return jsonify("")
 
 @app.route('/_change_key/', methods=['POST'])
@@ -230,7 +230,7 @@ def change_key():
     try_connect_db()
     content = request.get_json()
     print(content)
-    #cs.act_24(content['ap_id'], content['new_key'] )
+    cs.act_24(content['ap_id'], content['new_key'] )
     return jsonify("")
 
 @app.route('/_get_log/<ap_id>', methods=['GET'])
@@ -242,7 +242,7 @@ def get_log(ap_id):
     #print(content)
     print("get ap log:", ap_id)
 
-    #cs.act_10(ap_id)
+    cs.act_10(ap_id)
     time.sleep(3)   #sleep 3s
     #return 'ap_log: ' + str(ap_id)
     return db.get_ap_log(ap_id )
