@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<html>
+<head>	
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>User</title>
+    <style type="text/css">
+        div.table {
+            margin-left: 15%;
+            padding: 10px 20px;
+        }
+
+        #userInput {
+            border: 1px solid black;
+            margin-bottom: 12px;
+        }
+
+        .limiter {
+            width: 100%;
+        }
+        
+    </style>
+	
+    <script>
+        $(document).ready(function () {
+            $('.js-pscroll').each(function(){
+                var ps = new PerfectScrollbar(this);
+                $(window).on('resize', function(){
+                ps.update();
+                })
+            });
+        })
+    </script>
+    <script>
+        function userFunction() {
+            //Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("userInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("Table");
+            tr = table.getElementsByTagName("tr");
+            //Loop throught all table rows, and hide those who don't match the search query
+            for (i=0; i<tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if(txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#Table").tablesorter({widgets: ['zebra']});
+        });
+    </script>
+
+    <div id="user_list">
+        <div class="limiter">
+            <h1><b>Connecting User</b></h1>
+            <input type="text" id="userInput" onkeyup="userFunction()" placeholder="Search for User name .." style="margin-left: 2%; margin-top: 3%; outline-style: solid; outline-width: 2px; padding: 4px;">
+            <div class="container-table100" style="justify-content: flex-start; min-height: 20vh;">
+                <div class="wrap-table100">
+                    <div class="table100 ver3 m-b-110">
+                        
+                            <table id="Table">
+                                <div class="table100-head">
+                                <thead>
+                                    <tr class="row100 head" style="cursor: pointer;">
+                                        <th class="cell100 column1">user_ID</th>
+                                        <th class="cell100 column2">username</th>
+                                        <th class="cell100 column3">password</th>
+                                        <th class="cell100 column4">email</th>
+                                        <th class="cell100 column5">register date</th>
+                                    </tr>
+                                </thead>
+                                </div>
+<!--                             </table>
+                        </div>
+
+                        <div class="table100-body js-pscroll">
+                            <table id="userTable"> -->
+                                <div class="js-pscroll">
+                                <tbody class="table100-body">
+                                    {# 從這裡開始 #}
+                                    {%- for user_id in users -%}
+                                    {% set user = users[ user_id ] %}
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">{{- user_id -}}</td>
+                                        <td class="cell100 column2">{{ user[0] }}</td>
+                                        <td class="cell100 column3">{{ user[1] }}</td>
+                                        <td class="cell100 column4">{{ user[2] }}</td>
+                                        <td class="cell100 column5">{{ user[3] }}</td>
+                                    </tr>
+                                    {%- endfor -%}
+                                    {# 到這裡結束 #}
+                                </tbody>
+                                </div>
+                            </table>    
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</body>
+</html>
