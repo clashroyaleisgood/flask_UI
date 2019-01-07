@@ -346,7 +346,7 @@
 								{%- for ap_id in ap_names -%}
                                 {% set ap = ap_names[ap_id] %}
                                 
-                                {%- if ap_id in  -%}
+                                {%- if ap_id in online -%}
                                 <tr class="row100 body" data-id=" {{ ap_id }} " data-online= true>
                                     <td class="cell100 column5">
                                         <div style="width:20px; height:20px; background:rgb(80, 245, 80);border-radius:50%;position: relative;left:50px;"></div>
