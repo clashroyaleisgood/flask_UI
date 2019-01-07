@@ -244,11 +244,11 @@ def get_log(ap_id):
 
     #cs.act_10(ap_id)
     time.sleep(3)   #sleep 3s
-    return 'ap_log: ' + str(ap_id)
-    #return db.get_ap_log(ap_id )
+    #return 'ap_log: ' + str(ap_id)
+    return db.get_ap_log(ap_id )
 
 if __name__ == "__main__":
     try_connect_db()
 
-    app.run(threaded=True, debug=True, port=5000)
-    #app.run(host= '10.140.0.4',debug=True, threaded=True, port=3389)
+    #app.run(threaded=True, debug=True, port=5000)
+    app.run(host= '10.140.0.4',debug=True, threaded=True, port=3389)
