@@ -45,7 +45,7 @@
             tr = table.getElementsByTagName("tr");
             //Loop throught all table rows, and hide those who don't match the search query
             for (i=0; i<tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[0];
+                td = tr[i].getElementsByTagName("td")[1];
                 if (td) {
                     txtValue = td.textContent || td.innerText;
                     if(txtValue.toUpperCase().indexOf(filter) > -1) {
@@ -70,7 +70,7 @@
     <div id="user_list">
         <div class="limiter">
             <h1><b>Connecting User</b></h1>
-            <input type="text" id="userInput" onkeyup="userFunction()" placeholder="Search for User ID .." style="margin-left: 2%; margin-top: 3%; outline-style: solid; outline-width: 2px; padding: 4px;">
+            <input type="text" id="userInput" onkeyup="userFunction()" placeholder="Search for User name .." style="margin-left: 2%; margin-top: 3%; outline-style: solid; outline-width: 2px; padding: 4px;">
             <div class="container-table100" style="justify-content: flex-start; min-height: 20vh;">
                 <div class="wrap-table100">
                     <div class="table100 ver3 m-b-110">
