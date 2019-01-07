@@ -22,7 +22,7 @@
     	<h1><b>Controller Information</b></h1>
 
 	    <div class="a" style="display:inline-block; width:30%; float:left;">
-			<div style="width: 100%; height: 20%; border:5px double black; padding:1%; position:relative; left:10%; top: 50px;">
+			<div style="width: 30%; min-width: 250px; height: 200px; border:5px double black; padding:1%; position:fixed; left:175px; top: 150px;">
         	    <div style="font-size:30px; position:relative;">
         	    	<p>controller狀態</p>
         	    	<div style="width:100px; height:100px; background-color:white; border-radius:999em; border:solid 2px; position:relative; left: 35%; top: 20px; margin-bottom: 3%;">
@@ -38,19 +38,17 @@
         	    </div>
         	<br>
 		</div>
-		<div class="block" style="width:100%; height:20%; border:5px double black; padding: 1%;  position:relative; left:10%; top: 110px;">
+		<div class="block" style="width:30%; min-width: 250px; height:275px; border:5px double black; padding: 1%;  position:fixed; left:175px; top: 375px;">
         	    <span style="font-size:30px;">
-        			已上線AP數量: {{ ap }}
+        			已上線AP數量： {{ ap|safe }}
         			<br>
-        			<br>
-        			<br>
-        			使用者數量: {{ user }}
+        			使用者數量： {{ user|safe }}
         	    </span>
         	</div>
             </div>
 	    <!--graph-->
-            <div style="display: inline-block; width:65%; height:100%; margin-left:5%; margin-top:2%;" id="main_chart">
-				<div class="wrapper" style="margin: 3%;">
+            <div style="display: inline-block; width:80%; height:100%; margin-left:5%; margin-top:2%;" id="main_chart">
+				<div class="wrapper" style="margin-left: 475px;">
 					<h1>登入人數變化(人數/小時)</h1>
 					<canvas id="myChart" width="760px" height="400px" style="width: 760px; height: 400px;"></canvas>
 		</div>
